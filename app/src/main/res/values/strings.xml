@@ -1,3 +1,37 @@
 <resources>
     <string name="app_name">PriceCalculator</string>
+
+    <string name="gram">g</string>
+    <string name="kilogram">kg</string>
+    <string name="liter">L</string>
+    <string name="milliliter">mL</string>
+    <string name="pics">pcs</string>
+    <string name="meter">m</string>
+    <string name="millimeter">mm</string>
+    <string name="centimeter">cm</string>
+
+    <!--Currency-->
+    <string name="currency_title">Currency</string>
+    <string name="ruble_name" translatable="false">RUB</string>
+    <string name="ruble_sign" translatable="false">₽</string>
+    <string name="dollar_name" translatable="false">USD</string>
+    <string name="dollar_sign" translatable="false">$</string>
+    <string name="euro_name" translatable="false">EUR</string>
+    <string name="euro_sign" translatable="false">€</string>
+    <string name="ukr_name" translatable="false">UAH</string>
+    <string name="ukr_sign" translatable="false">₴</string>
+    <string name="indian_name" translatable="false">INR</string>
+    <string name="indian_sign" translatable="false">₹</string>
+    <string name="brazil_name" translatable="false">BRL</string>
+    <string name="brazil_sign" translatable="false">R$</string>
+    <string name="kazakh_name" translatable="false">KZT</string>
+    <string name="kazakh_sign" translatable="false">₸</string>
+    <string name="malay_name" translatable="false">MYR</string>
+    <string name="malay_sign" translatable="false">RM</string>
+    <string name="korean_name" translatable="false">KRW</string>
+    <string name="korean_sign" translatable="false">₩</string>
+    <string name="philip_name" translatable="false">PHP</string>
+    <string name="philip_sign" translatable="false">₱</string>
+    <string name="mexican_name" translatable="false">MXN</string>
+    <string name="mexican_sign" translatable="false">$</string>
 </resources>
