@@ -1,4 +1,4 @@
-package com.zedevstuds.price_equalizer.price_calculation.domain.usecases
+package com.zedevstuds.price_equalizer.price_calculation.domain.usecases.product
 
 import com.zedevstuds.price_equalizer.price_calculation.domain.models.MeasureUnit
 import java.math.BigDecimal

@@ -2,7 +2,9 @@ package com.zedevstuds.price_equalizer.price_calculation.data.di
 
 import androidx.room.Room
 import com.zedevstuds.price_equalizer.price_calculation.data.database.ProductsDatabase
-import com.zedevstuds.price_equalizer.price_calculation.data.repositories.ProductRepositoryImp
+import com.zedevstuds.price_equalizer.price_calculation.data.repositories.ProductListRepositoryImpl
+import com.zedevstuds.price_equalizer.price_calculation.data.repositories.ProductRepositoryImpl
+import com.zedevstuds.price_equalizer.price_calculation.domain.repositories.ProductListRepository
 import com.zedevstuds.price_equalizer.price_calculation.domain.repositories.ProductRepository
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
@@ -16,6 +18,9 @@ val databaseModule = module {
             .build()
     }
     single<ProductRepository> {
-        ProductRepositoryImp(database = get())
+        ProductRepositoryImpl(database = get())
+    }
+    single<ProductListRepository> {
+        ProductListRepositoryImpl(database = get())
     }
 }

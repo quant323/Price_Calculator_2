@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 import com.zedevstuds.price_equalizer.price_calculation.domain.models.ProductModel
 import com.zedevstuds.price_equalizer.price_calculation.domain.models.listOfUnits
 
-const val TABLE_NAME = "products_table"
+private const val TABLE_NAME = "products_table"
 
 @Entity(tableName = TABLE_NAME)
 data class ProductDbModel(
@@ -16,9 +16,6 @@ data class ProductDbModel(
 
     @ColumnInfo(name = "list_name")
     val listName: String,
-
-    @ColumnInfo(name = "product_id")
-    val productId: Int,
 
     @ColumnInfo(name = "entered_amount")
     val enteredAmount: String,
@@ -51,9 +48,8 @@ fun ProductDbModel.toDomain() =
 
 fun ProductModel.toData(listName: String) =
     ProductDbModel(
-        id = 0,
+        id = id,
         listName = listName,
-        productId = id,
         enteredAmount = enteredAmount,
         enteredPrice = enteredPrice,
         selectedMeasureUnitId = selectedMeasureUnit.id,

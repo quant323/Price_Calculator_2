@@ -1,5 +1,6 @@
 package com.zedevstuds.price_equalizer.price_calculation.ui.di
 
+import com.zedevstuds.price_equalizer.price_calculation.ui.DrawerViewModel
 import com.zedevstuds.price_equalizer.price_calculation.ui.EnterParamsViewModel
 import com.zedevstuds.price_equalizer.price_calculation.ui.MainScreenViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -12,14 +13,23 @@ val viewModelsModule = module {
             getPriceForOneUnitUseCase = get()
         )
     }
+    factory {
+        DrawerViewModel(
+            getAllListsUseCase = get()
+        )
+    }
     viewModel {
         MainScreenViewModel(
             enterParamsViewModel = get(),
-            getPriceForOneUnitUseCase = get(),
-            preferenceRepository = get(),
+            drawerViewModel = get(),
             saveProductsUseCase = get(),
             getProductsForListUseCase = get(),
-            deleteListUseCase = get()
+            deleteListUseCase = get(),
+            addProductUseCase = get(),
+            deleteProductUseCase = get(),
+            clearListUseCase = get(),
+            addListUseCase = get(),
+            updateProductListNameUseCase = get(),
         )
     }
 }

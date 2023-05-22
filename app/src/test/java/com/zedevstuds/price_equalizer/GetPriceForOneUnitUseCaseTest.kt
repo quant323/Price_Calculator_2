@@ -1,6 +1,6 @@
 package com.zedevstuds.price_equalizer
 
-import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.GetPriceForOneUnitUseCase
+import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.product.GetPriceForOneUnitUseCase
 import com.zedevstuds.price_equalizer.price_calculation.domain.models.MeasureUnit
 import org.junit.Assert
 import org.junit.Before

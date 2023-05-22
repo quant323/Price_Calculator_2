@@ -1,35 +1,58 @@
 package com.zedevstuds.price_equalizer.price_calculation.ui
 
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zedevstuds.price_equalizer.price_calculation.domain.models.ProductModel
-import com.zedevstuds.price_equalizer.price_calculation.domain.repositories.PreferenceRepository
-import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.DeleteListUseCase
-import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.GetPriceForOneUnitUseCase
-import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.GetProductsForListUseCase
-import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.SaveProductsUseCase
+import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.list.AddListUseCase
+import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.product.AddProductUseCase
+import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.product.ClearListUseCase
+import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.product.DeleteListUseCase
+import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.product.DeleteProductUseCase
+import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.product.GetProductsForListUseCase
+import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.product.SaveProductsUseCase
+import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.product.UpdateProductListNameUseCase
 import com.zedevstuds.price_equalizer.price_calculation.ui.models.CurrencyUi
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 
 const val TAG = "myTag"
+const val AUTOGENERATE_ID = 0
 
 class MainScreenViewModel(
     val enterParamsViewModel: EnterParamsViewModel,
-    private val preferenceRepository: PreferenceRepository,
-    private val getPriceForOneUnitUseCase: GetPriceForOneUnitUseCase,
+    val drawerViewModel: DrawerViewModel,
+    private val addProductUseCase: AddProductUseCase,
     private val saveProductsUseCase: SaveProductsUseCase,
     private val getProductsForListUseCase: GetProductsForListUseCase,
     private val deleteListUseCase: DeleteListUseCase,
+    private val deleteProductUseCase: DeleteProductUseCase,
+    private val clearListUseCase: ClearListUseCase,
+    private val addListUseCase: AddListUseCase,
+    private val updateProductListNameUseCase: UpdateProductListNameUseCase,
 ) : ViewModel() {
 
-    val productList: SnapshotStateList<ProductModel> = mutableStateListOf()
+    private var currentListName = MutableStateFlow(DEFAULT_LIST_NAME)
+    private var sortByPrice = MutableStateFlow(false)
 
-    private var sortByPrice = false
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val productList = currentListName.combine(sortByPrice) { a, b ->
+        getProductsForListUseCase.execute(a, b)
+    }.flatMapLatest {
+        it
+    }
+
+    init {
+        subscribeToEnterParamsEvents()
+        subscribeToDrawerEvents()
+    }
 
     fun onDeleteProduct(product: ProductModel) {
-        productList.remove(product)
+        viewModelScope.launch {
+            deleteProductUseCase.execute(product, currentListName.value)
+        }
     }
 
     fun onCurrencyChanged(currency: CurrencyUi) {
@@ -39,32 +62,49 @@ class MainScreenViewModel(
     fun getCurrency() = enterParamsViewModel.enterParamsViewState.value.currency
 
     fun onSortClicked() {
-        sortByPrice = !sortByPrice
-        if (sortByPrice) {
-            productList.sortBy { it.priceForOneUnit }
-        } else {
-            productList.sortBy { it.id }
+        sortByPrice.value = !sortByPrice.value
+    }
+
+    fun saveProductList(listName: String) {
+
+        viewModelScope.launch {
+            addListUseCase.execute(listName)
+            updateProductListNameUseCase.execute(
+                oldName = currentListName.value,
+                newName = listName
+            )
         }
     }
 
-    fun saveProductList(listName: String = TEST_LIST_NAME) {
+    private fun subscribeToEnterParamsEvents() {
         viewModelScope.launch {
-            saveProductsUseCase.execute(products = productList, listName = listName)
+            enterParamsViewModel.events.collect { event ->
+                when (event) {
+                    is EnterParamsViewModel.EnterParamsEvent.AddProductEvent -> {
+                        addProductUseCase.execute(event.product, currentListName.value)
+                    }
+                    is EnterParamsViewModel.EnterParamsEvent.CleanListEvent -> {
+                        clearListUseCase.execute(currentListName.value)
+                    }
+                }
+            }
         }
     }
 
-    fun loadProductList(listName: String = TEST_LIST_NAME) {
+    private fun subscribeToDrawerEvents() {
         viewModelScope.launch {
-            productList.apply {
-                clear()
-                addAll(getProductsForListUseCase.execute(listName))
+            drawerViewModel.events.collect { event ->
+                when (event) {
+                    is DrawerViewModel.DrawerEvent.OnListClickEvent -> {
+                        currentListName.value = event.listModel.name
+                    }
+                }
             }
         }
     }
 
     companion object {
         const val MAX_TITLE_LENGTH = 12
-        const val DEFAULT_LIST_NAME = "List 1"
-        private const val TEST_LIST_NAME = "test_list"
+        const val DEFAULT_LIST_NAME = "FAST LIST"
     }
 }

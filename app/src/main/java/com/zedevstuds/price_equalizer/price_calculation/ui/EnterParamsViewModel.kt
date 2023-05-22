@@ -9,18 +9,27 @@ import com.zedevstuds.price_equalizer.price_calculation.domain.models.ProductMod
 import com.zedevstuds.price_equalizer.price_calculation.domain.models.getMainUnit
 import com.zedevstuds.price_equalizer.price_calculation.domain.models.listOfUnits
 import com.zedevstuds.price_equalizer.price_calculation.domain.repositories.PreferenceRepository
-import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.GetPriceForOneUnitUseCase
+import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.product.GetPriceForOneUnitUseCase
 import com.zedevstuds.price_equalizer.price_calculation.ui.models.CurrencyUi
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.launch
 
 class EnterParamsViewModel(
     private val preferenceRepository: PreferenceRepository,
     private val getPriceForOneUnitUseCase: GetPriceForOneUnitUseCase,
+    private val scope: CoroutineScope = CoroutineScope(Job() + Dispatchers.Main)
 ) {
 
     private val _enterParamsViewState = mutableStateOf(getInitialState())
     val enterParamsViewState: State<EnterParamsViewState> = _enterParamsViewState
 
+    val events = MutableSharedFlow<EnterParamsEvent>()
+
     private var numberOfCreatedProducts = 0
+
 
     fun onMeasureUnitSelected(unit: MeasureUnit) {
         _enterParamsViewState.value = enterParamsViewState.value.copy(
@@ -74,19 +83,23 @@ class EnterParamsViewModel(
 
     private fun addProductToList() {
         val product = ProductModel(
-            id = numberOfCreatedProducts,
+            id = AUTOGENERATE_ID,
             enteredAmount = enterParamsViewState.value.enteredAmount,
             enteredPrice = enterParamsViewState.value.enteredPrice,
             selectedMeasureUnit =  enterParamsViewState.value.selectedUnit,
             priceForOneUnit = enterParamsViewState.value.priceForCustomAmount.toDouble(),
             title = enterParamsViewState.value.title
         )
-//        productList.add(product)
+        scope.launch {
+            events.emit(EnterParamsEvent.AddProductEvent(product))
+        }
         numberOfCreatedProducts++
     }
 
     private fun clearList() {
-//        productList.clear()
+        scope.launch {
+            events.emit(EnterParamsEvent.CleanListEvent)
+        }
         resetInitialState()
     }
 
@@ -162,6 +175,11 @@ class EnterParamsViewModel(
         val title: String,
         val currency: CurrencyUi,
     )
+
+    sealed class EnterParamsEvent {
+        class AddProductEvent(val product: ProductModel) : EnterParamsEvent()
+        object CleanListEvent : EnterParamsEvent()
+    }
 
     companion object {
         private const val INITIAL_VALUE = ""

@@ -7,27 +7,24 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Face
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.DrawerState
-import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.zedevstuds.price_equalizer.price_calculation.domain.models.ListModel
+import com.zedevstuds.price_equalizer.price_calculation.ui.DrawerViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -35,9 +32,34 @@ private val APPBAR_HEIGHT = 64.dp
 private const val DRAWER_WIDTH = 0.8
 
 @Composable
-fun NavDrawerContent(scope: CoroutineScope, drawerState: DrawerState) {
-    val items = listOf(Icons.Default.Favorite, Icons.Default.Face, Icons.Default.Email)
-    val selectedItem = remember { mutableStateOf(items[0]) }
+fun NavigationDrawer(
+    viewModel: DrawerViewModel,
+    scope: CoroutineScope,
+    drawerState: DrawerState
+) {
+    val items = viewModel.listOfProduct.collectAsState(emptyList())
+//    val selectedItem = remember { mutableStateOf(items.value[0]) }
+
+    NavDrawerContent(
+        items = items.value,
+        onListClicked = { item ->
+            viewModel.onListClicked(item)
+            scope.launch { drawerState.close() }
+        },
+        onBackClicked = {
+            scope.launch { drawerState.close() }
+        }
+    )
+}
+
+@Composable
+fun NavDrawerContent(
+    items: List<ListModel>,
+    onListClicked: (ListModel) -> Unit,
+    onBackClicked: () -> Unit
+) {
+//    val items = listOf(Icons.Default.Favorite, Icons.Default.Face, Icons.Default.Email)
+//    val selectedItem = remember { mutableStateOf(items[0]) }  // todo prepopulate database with initial list item
     val drawerWidth = getDrawerWidth(LocalConfiguration.current.screenWidthDp)
 
     ModalDrawerSheet(modifier = Modifier.width(drawerWidth)) {
@@ -51,18 +73,19 @@ fun NavDrawerContent(scope: CoroutineScope, drawerState: DrawerState) {
                 imageVector = Icons.Filled.ArrowBack,
                 contentDescription = "Close Drawer",
                 modifier = Modifier.clickable {
-                    scope.launch { drawerState.close() }
+                    onBackClicked()
                 }
             )
         }
         items.forEach { item ->
             NavigationDrawerItem(
-                icon = { Icon(item, contentDescription = null) },
                 label = { Text(item.name) },
-                selected = item == selectedItem.value,
+                selected = false,
+                // TODO implement selection logic
+//                selected = item == selectedItem.value,
                 onClick = {
-                    scope.launch { drawerState.close() }
-                    selectedItem.value = item
+//                    selectedItem.value = item
+                    onListClicked(item)
                 },
                 modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
             )
@@ -70,13 +93,60 @@ fun NavDrawerContent(scope: CoroutineScope, drawerState: DrawerState) {
     }
 }
 
+//@Composable
+//fun NavDrawerContent(scope: CoroutineScope, drawerState: DrawerState) {
+//    val items = listOf(Icons.Default.Favorite, Icons.Default.Face, Icons.Default.Email)
+//    val selectedItem = remember { mutableStateOf(items[0]) }
+//    val drawerWidth = getDrawerWidth(LocalConfiguration.current.screenWidthDp)
+//
+//    ModalDrawerSheet(modifier = Modifier.width(drawerWidth)) {
+//        Box(
+//            modifier = Modifier
+//                .height(APPBAR_HEIGHT)
+//                .padding(start = 20.dp),
+//            contentAlignment = Alignment.Center
+//        ) {
+//            Icon(
+//                imageVector = Icons.Filled.ArrowBack,
+//                contentDescription = "Close Drawer",
+//                modifier = Modifier.clickable {
+//                    scope.launch { drawerState.close() }
+//                }
+//            )
+//        }
+//        items.forEach { item ->
+//            NavigationDrawerItem(
+//                icon = { Icon(item, contentDescription = null) },
+//                label = { Text(item.name) },
+//                selected = item == selectedItem.value,
+//                onClick = {
+//                    scope.launch { drawerState.close() }
+//                    selectedItem.value = item
+//                },
+//                modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+//            )
+//        }
+//    }
+//}
+
 private fun getDrawerWidth(screenWidth: Int): Dp = (screenWidth * DRAWER_WIDTH).toInt().dp
 
 @Preview
 @Composable
 fun DrawerPreview() {
-    NavDrawerContent(rememberCoroutineScope(), rememberDrawerState(DrawerValue.Open))
+    NavDrawerContent(
+        items = listItems,
+        onListClicked = {},
+        onBackClicked = {}
+    )
 }
+
+private val listItems = listOf(
+    ListModel(0, "Current List"),
+    ListModel(1, "Pasta"),
+    ListModel(2, "Cheese"),
+    ListModel(3, "Apples")
+)
 
 //@OptIn(ExperimentalMaterial3Api::class)
 //@Composable

@@ -162,13 +162,14 @@ fun SelectCurrencyDialogPreview() {
     )
 }
 
+// TODO OK is disabled if Title is empty
 @Composable
 fun ListTitleDialog(
-    title: String,
+    initialTile: String,
     onConfirm: (title: String) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    var title by remember { mutableStateOf(title) }
+    var title by remember { mutableStateOf(initialTile) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -204,7 +205,7 @@ fun ListTitleDialog(
 @Composable
 fun ListTitleDialogPreview() {
     ListTitleDialog(
-        title = "List 1",
+        initialTile = "List 1",
         onConfirm = {},
         onDismiss = {}
     )

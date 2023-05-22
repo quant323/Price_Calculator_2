@@ -14,6 +14,7 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,7 +30,7 @@ import com.zedevstuds.price_equalizer.price_calculation.ui.compose.CalcAppBar
 import com.zedevstuds.price_equalizer.price_calculation.ui.compose.EditTitleDialog
 import com.zedevstuds.price_equalizer.price_calculation.ui.compose.EnterParamsArea
 import com.zedevstuds.price_equalizer.price_calculation.ui.compose.ListTitleDialog
-import com.zedevstuds.price_equalizer.price_calculation.ui.compose.NavDrawerContent
+import com.zedevstuds.price_equalizer.price_calculation.ui.compose.NavigationDrawer
 import com.zedevstuds.price_equalizer.price_calculation.ui.compose.ProductListItem
 import com.zedevstuds.price_equalizer.price_calculation.ui.compose.SelectCurrencyDialog
 import com.zedevstuds.price_equalizer.price_calculation.ui.models.CurrencyUi
@@ -50,14 +51,15 @@ fun MainScreen(
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            NavDrawerContent(coroutineScope, drawerState)
+            NavigationDrawer(mainViewModel.drawerViewModel, coroutineScope, drawerState)
         }
     ) {
         Scaffold(
             topBar = {
                 CalcAppBar(
                     currency = mainViewModel.getCurrency().sign,
-                    isSortEnabled = mainViewModel.productList.size > 1,
+                    isSortEnabled = true,   // TODO fix
+//                    isSortEnabled = mainViewModel.productList.value.size > 1,
                     isSaveEnabled = true,
                     onCurrencyClicked = { showCurrencyDialog = true },
                     onSortClicked = { mainViewModel.onSortClicked() },
@@ -87,7 +89,7 @@ fun MainScreen(
             }
             if (showListTitleDialog) {
                 ListTitleDialog(
-                    title = MainScreenViewModel.DEFAULT_LIST_NAME,
+                    initialTile = MainScreenViewModel.DEFAULT_LIST_NAME,
                     onConfirm = { title ->
                         mainViewModel.saveProductList(title)
                         showListTitleDialog = false
@@ -104,9 +106,7 @@ fun MainScreenContent(
     mainScreenViewModel: MainScreenViewModel,
     scope: CoroutineScope,
 ) {
-    val enterParamsViewModel = mainScreenViewModel.enterParamsViewModel
-    val enterParamsViewState = enterParamsViewModel.enterParamsViewState
-    val productList = mainScreenViewModel.productList
+    val productList = mainScreenViewModel.productList.collectAsState(emptyList())
     val scrollState = rememberLazyListState()
 
     Column(
@@ -124,12 +124,11 @@ fun MainScreenContent(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             state = scrollState
         ) {
-            // TODO fix key items(productList, key = { it.id }) {product ->
-            items(productList) {product ->
+            items(productList.value, key = { it.id }) {product ->
                 val currency = mainScreenViewModel.getCurrency().sign
                 ProductListItem(
                     product = product,
-                    bestPriceProduct = getBestPriceProduct(productList),
+                    bestPriceProduct = getBestPriceProduct(productList.value),
                     currency = currency,
                     modifier = Modifier.fillMaxWidth(),
                     onEditClicked = {
@@ -148,9 +147,9 @@ fun MainScreenContent(
         EnterParamsArea(
             viewModel = mainScreenViewModel.enterParamsViewModel,
             onProductAdded = {
-                if (productList.isNotEmpty()) {
+                if (productList.value.isNotEmpty()) {
                     scope.launch {
-                        scrollState.scrollToItem(productList.size - 1)
+                        scrollState.scrollToItem(productList.value.size - 1)
                     }
                 }
             }
