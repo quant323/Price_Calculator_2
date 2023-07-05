@@ -1,4 +1,4 @@
-package com.zedevstuds.price_equalizer.price_calculation.ui.compose
+package com.zedevstuds.price_equalizer.price_calculation.ui.enterparams
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -43,15 +43,12 @@ import com.zedevstuds.price_equalizer.R
 import com.zedevstuds.price_equalizer.core.ui.theme.PriceCalculatorTheme
 import com.zedevstuds.price_equalizer.price_calculation.domain.models.MeasureUnit
 import com.zedevstuds.price_equalizer.price_calculation.domain.models.listOfUnits
-import com.zedevstuds.price_equalizer.price_calculation.ui.EnterParamsViewModel
-import com.zedevstuds.price_equalizer.price_calculation.ui.MainScreenViewModel
-import com.zedevstuds.price_equalizer.price_calculation.ui.models.CurrencyUi
+import com.zedevstuds.price_equalizer.price_calculation.ui.mainscreen.MainScreenViewModel
 
 @Composable
 fun EnterParamsArea(
     viewModel: EnterParamsViewModel,
     modifier: Modifier = Modifier,
-    onProductAdded: () -> Unit = {}
 ) {
     EnterParamsAreaContent(
         viewState = viewModel.enterParamsViewState.value,
@@ -67,7 +64,7 @@ fun EnterParamsArea(
             viewModel.onPriceChanged(it)
         },
         onOkClicked = {
-            viewModel.onOkClicked(onFinished = onProductAdded)
+            viewModel.onOkClicked()
         },
         onClearClicked = {
             viewModel.onCleanClicked()
@@ -102,7 +99,9 @@ fun EnterParamsAreaContent(
             onTitleChanged = onTitleChanged,
             onOk = {
                 onOkClicked()
-                focusRequester.requestFocus()
+                if (!isHidden) {
+                    focusRequester.requestFocus()
+                }
             },
             onClear = onClearClicked,
             onHide = { isHidden = !isHidden },
@@ -190,7 +189,7 @@ fun EnterChipsSection(
                             text = stringResource(id = it.toStringResId()),
                             style = MaterialTheme.typography.titleMedium
                         )
-                            },
+                    },
                 )
             }
         }

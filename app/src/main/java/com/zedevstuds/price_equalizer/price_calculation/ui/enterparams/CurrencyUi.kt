@@ -1,4 +1,4 @@
-package com.zedevstuds.price_equalizer.price_calculation.ui.models
+package com.zedevstuds.price_equalizer.price_calculation.ui.enterparams
 
 data class CurrencyUi(val sign: String, val name: String) {
     companion object {
@@ -24,18 +24,31 @@ data class CurrencyUi(val sign: String, val name: String) {
         private const val PHILIP_NAME ="PHP"
         private const val MEXICAN_SIGN = "$"
         private const val MEXICAN_NAME = "MXN"
+
+        val DOLLAR = CurrencyUi(DOLLAR_SIGN, DOLLAR_NAME)
+        val EURO = CurrencyUi(EURO_SIGN, EURO_NAME)
+        val RUB = CurrencyUi(RUB_SIGN, RUB_NAME)
+        val UKR = CurrencyUi(UKR_SIGN, UKR_NAME)
+        val INDIAN = CurrencyUi(INDIAN_SIGN, INDIAN_NAME)
+        val BRAZIL = CurrencyUi(BRAZIL_SIGN, BRAZIL_NAME)
+        val KAZAKH = CurrencyUi(KAZAKH_SIGN, KAZAKH_NAME)
+        val MALAY = CurrencyUi(MALAY_SIGN, MALAY_NAME)
+        val KOREAN = CurrencyUi(KOREAN_SIGN, KOREAN_NAME)
+        val PHILIP = CurrencyUi(PHILIP_SIGN, PHILIP_NAME)
+        val MEXICAN = CurrencyUi(MEXICAN_SIGN, MEXICAN_NAME)
+
         val currencyList = listOf(
-            CurrencyUi(DOLLAR_SIGN, DOLLAR_NAME),
-            CurrencyUi(EURO_SIGN, EURO_NAME),
-            CurrencyUi(RUB_SIGN, RUB_NAME),
-            CurrencyUi(UKR_SIGN, UKR_NAME),
-            CurrencyUi(INDIAN_SIGN, INDIAN_NAME),
-            CurrencyUi(BRAZIL_SIGN, BRAZIL_NAME),
-            CurrencyUi(KAZAKH_SIGN, KAZAKH_NAME),
-            CurrencyUi(MALAY_SIGN, MALAY_NAME),
-            CurrencyUi(KOREAN_SIGN, KOREAN_NAME),
-            CurrencyUi(PHILIP_SIGN, PHILIP_NAME),
-            CurrencyUi(MEXICAN_SIGN, MEXICAN_NAME),
+            DOLLAR,
+            EURO,
+            RUB,
+            UKR,
+            INDIAN,
+            BRAZIL,
+            KAZAKH,
+            MALAY,
+            KOREAN,
+            PHILIP,
+            MEXICAN,
         )
     }
 }

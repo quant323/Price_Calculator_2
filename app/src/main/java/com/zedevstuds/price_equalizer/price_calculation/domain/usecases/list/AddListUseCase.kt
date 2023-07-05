@@ -2,7 +2,7 @@ package com.zedevstuds.price_equalizer.price_calculation.domain.usecases.list
 
 import com.zedevstuds.price_equalizer.price_calculation.domain.models.ListModel
 import com.zedevstuds.price_equalizer.price_calculation.domain.repositories.ProductListRepository
-import com.zedevstuds.price_equalizer.price_calculation.ui.AUTOGENERATE_ID
+import com.zedevstuds.price_equalizer.price_calculation.ui.mainscreen.AUTOGENERATE_ID
 
 class AddListUseCase(
     private val productListRepository: ProductListRepository

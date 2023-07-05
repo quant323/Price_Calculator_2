@@ -1,4 +1,4 @@
-package com.zedevstuds.price_equalizer.price_calculation.ui
+package com.zedevstuds.price_equalizer.price_calculation.ui.enterparams
 
 import android.util.Log
 import androidx.compose.runtime.State
@@ -10,12 +10,14 @@ import com.zedevstuds.price_equalizer.price_calculation.domain.models.getMainUni
 import com.zedevstuds.price_equalizer.price_calculation.domain.models.listOfUnits
 import com.zedevstuds.price_equalizer.price_calculation.domain.repositories.PreferenceRepository
 import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.product.GetPriceForOneUnitUseCase
-import com.zedevstuds.price_equalizer.price_calculation.ui.models.CurrencyUi
+import com.zedevstuds.price_equalizer.price_calculation.ui.mainscreen.AUTOGENERATE_ID
+import com.zedevstuds.price_equalizer.price_calculation.ui.mainscreen.TAG
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 class EnterParamsViewModel(
     private val preferenceRepository: PreferenceRepository,
@@ -29,7 +31,6 @@ class EnterParamsViewModel(
     val events = MutableSharedFlow<EnterParamsEvent>()
 
     private var numberOfCreatedProducts = 0
-
 
     fun onMeasureUnitSelected(unit: MeasureUnit) {
         _enterParamsViewState.value = enterParamsViewState.value.copy(
@@ -61,12 +62,11 @@ class EnterParamsViewModel(
         )
     }
 
-    fun onOkClicked(onFinished: () -> Unit) {
+    fun onOkClicked() {
         if (enterParamsViewState.value.enteredAmount.isEmpty() ||
             enterParamsViewState.value.enteredPrice.isEmpty()) return
         addProductToList()
         resetInitialState()
-        onFinished()
     }
 
     fun onCleanClicked() {
@@ -137,7 +137,7 @@ class EnterParamsViewModel(
             selectedUnit = measureUnit,
             mainUnit = measureUnit.getMainUnit(),
             listOfUnits = listOfUnits,
-            title = "$INITIAL_TITLE 1",
+            title = INITIAL_TITLE,
             currency = getCurrency()
         )
     }
@@ -148,7 +148,8 @@ class EnterParamsViewModel(
             enteredPrice = INITIAL_VALUE,
             customAmount = INITIAL_CUSTOM_AMOUNT,
             priceForCustomAmount = INITIAL_CUSTOM_PRICE,
-            title = "$INITIAL_TITLE ${numberOfCreatedProducts + 1}",
+            title = INITIAL_TITLE,
+//            title = "$INITIAL_TITLE ${numberOfCreatedProducts + 1}",
         )
     }
 
@@ -159,9 +160,23 @@ class EnterParamsViewModel(
     }
 
     private fun getCurrency(): CurrencyUi {
-        val defaultCurrency = CurrencyUi.currencyList.first()
-        val currencyName = preferenceRepository.getCurrencyName(defaultCurrency.name)
+        val defaultCurrency = getDefaultCurrency()
+        val currencyName = preferenceRepository.getCurrencyName(default = defaultCurrency.name)
         return CurrencyUi.currencyList.firstOrNull { it.name == currencyName } ?: defaultCurrency
+    }
+
+    private fun getDefaultCurrency(): CurrencyUi {
+        return when (Locale.getDefault().language) {
+            LANG_RUS -> CurrencyUi.RUB
+            LANG_ENG -> CurrencyUi.DOLLAR
+            LANG_ES, LANG_FR, LANG_GER, LANG_IT -> CurrencyUi.EURO
+            LANG_UKR -> CurrencyUi.UKR
+            LANG_IND -> CurrencyUi.INDIAN
+            LANG_BRA -> CurrencyUi.BRAZIL
+            LANG_KAZ -> CurrencyUi.KAZAKH
+            LANG_KOR -> CurrencyUi.KOREAN
+            else -> CurrencyUi.DOLLAR
+        }
     }
 
     data class EnterParamsViewState(
@@ -188,5 +203,16 @@ class EnterParamsViewModel(
         private const val INITIAL_TITLE = "Product"
         private const val MAX_AMOUNT_LENGTH = 8
         private const val MAX_PRICE_LENGTH = 8
+        private const val LANG_RUS = "ru"
+        private const val LANG_ENG = "en"
+        private const val LANG_IT = "it"
+        private const val LANG_FR = "fr"
+        private const val LANG_ES = "es"
+        private const val LANG_BRA = "pt"
+        private const val LANG_GER = "de"
+        private const val LANG_IND = "hi"
+        private const val LANG_KOR = "ko"
+        private const val LANG_UKR = "uk"
+        private const val LANG_KAZ = "kk"
     }
 }

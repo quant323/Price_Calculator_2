@@ -2,7 +2,7 @@ package com.zedevstuds.price_equalizer.price_calculation.domain.usecases.di
 
 import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.product.AddProductUseCase
 import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.product.ClearListUseCase
-import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.product.DeleteListUseCase
+import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.product.DeleteProductsInListUseCase
 import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.product.DeleteProductUseCase
 import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.product.GetPriceForOneUnitUseCase
 import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.product.GetProductsForListUseCase
@@ -21,7 +21,7 @@ val productUseCaseModule = module {
         GetProductsForListUseCase(productRepository = get())
     }
     factory {
-        DeleteListUseCase(productRepository = get())
+        DeleteProductsInListUseCase(productRepository = get())
     }
     factory {
         AddProductUseCase(productRepository = get())

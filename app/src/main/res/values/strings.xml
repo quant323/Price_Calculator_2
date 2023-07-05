@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">PriceCalculator</string>
 
+    <!--Measure Units-->
     <string name="gram">g</string>
     <string name="kilogram">kg</string>
     <string name="liter">L</string>

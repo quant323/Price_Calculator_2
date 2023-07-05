@@ -1,4 +1,4 @@
-package com.zedevstuds.price_equalizer.price_calculation.ui.compose
+package com.zedevstuds.price_equalizer.price_calculation.ui.mainscreen.items
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -23,6 +23,7 @@ import com.zedevstuds.price_equalizer.core.ui.theme.PriceCalculatorTheme
 import com.zedevstuds.price_equalizer.price_calculation.domain.models.MeasureUnit
 import com.zedevstuds.price_equalizer.price_calculation.domain.models.ProductModel
 import com.zedevstuds.price_equalizer.price_calculation.domain.models.getMainUnit
+import com.zedevstuds.price_equalizer.price_calculation.ui.enterparams.toStringResId
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -33,6 +34,7 @@ fun ProductListItem(
     product: ProductModel,
     bestPriceProduct: ProductModel?,
     currency: String,
+    index: Int,
     modifier: Modifier = Modifier,
     onEditClicked: () -> Unit = {},
     onDeleteClicked:() -> Unit = {},
@@ -53,7 +55,7 @@ fun ProductListItem(
     ) {
         Row {
             Text(
-                text = product.title,
+                text = "$index. ${product.title}",
                 modifier = Modifier
                     .weight(1f)
                     .clickable { onEditClicked() },
@@ -62,7 +64,7 @@ fun ProductListItem(
             )
             Icon(
                 imageVector = Icons.Filled.Close,
-                contentDescription = "Edit",
+                contentDescription = "Remove Item",
                 modifier = Modifier.clickable { onDeleteClicked() }
             )
         }
@@ -86,12 +88,13 @@ fun ProductListItem(
 
 @Preview(showBackground = true)
 @Composable
-fun MainScreenPreview() {
+fun ProductListItemPreview() {
     PriceCalculatorTheme {
         ProductListItem(
             product = getDummyProduct(id = 1),
             bestPriceProduct = getDummyProduct(id = 2),
             currency = "$",
+            index = 1,
             modifier = Modifier.fillMaxWidth(),
             onEditClicked = {}
         )

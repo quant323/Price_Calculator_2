@@ -1,4 +1,4 @@
-package com.zedevstuds.price_equalizer.price_calculation.ui.compose
+package com.zedevstuds.price_equalizer.price_calculation.ui.mainscreen.items
 
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.AlertDialog
@@ -21,11 +21,12 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.zedevstuds.price_equalizer.R
-import com.zedevstuds.price_equalizer.price_calculation.ui.models.CurrencyUi
-import com.zedevstuds.price_equalizer.price_calculation.ui.MainScreenViewModel
+import com.zedevstuds.price_equalizer.price_calculation.domain.models.ListModel
+import com.zedevstuds.price_equalizer.price_calculation.ui.enterparams.CurrencyUi
+import com.zedevstuds.price_equalizer.price_calculation.ui.mainscreen.MainScreenViewModel
 
 @Composable
-fun EditTitleDialog(
+fun EditProductTitleDialog(
     currentTitle: String,
     onConfirm: (title: String) -> Unit,
     onDismiss: () -> Unit,
@@ -65,7 +66,7 @@ fun EditTitleDialog(
 @Preview
 @Composable
 fun EditTitleDialogPreview() {
-    EditTitleDialog(
+    EditProductTitleDialog(
         currentTitle = "Product 1",
         onConfirm = {},
         onDismiss = {}
@@ -162,20 +163,29 @@ fun SelectCurrencyDialogPreview() {
     )
 }
 
-// TODO OK is disabled if Title is empty
 @Composable
-fun ListTitleDialog(
+fun AddListDialog(
     initialTile: String,
+    listsOfProducts: List<ListModel>,
     onConfirm: (title: String) -> Unit,
     onDismiss: () -> Unit,
 ) {
+
+    fun String.isNewTitle(): Boolean = listsOfProducts.none { it.name == this.trim() }
+
     var title by remember { mutableStateOf(initialTile) }
+    var isConfirmEnabled by remember {
+        mutableStateOf(
+            initialTile.isNewTitle()
+        )
+    }
 
     AlertDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
             Button(
-                onClick = { onConfirm(title) }
+                onClick = { onConfirm(title) },
+                enabled = isConfirmEnabled,
             ) {
                 Text(text = "OK")
             }
@@ -194,6 +204,7 @@ fun ListTitleDialog(
                 onValueChange = {
                     if (it.length <= MainScreenViewModel.MAX_TITLE_LENGTH) {
                         title = it
+                        isConfirmEnabled = it.isNewTitle()
                     }
                 }
             )
@@ -204,8 +215,45 @@ fun ListTitleDialog(
 @Preview
 @Composable
 fun ListTitleDialogPreview() {
-    ListTitleDialog(
+    AddListDialog(
         initialTile = "List 1",
+        listsOfProducts = emptyList(),
+        onConfirm = {},
+        onDismiss = {}
+    )
+}
+
+@Composable
+fun DeleteListDialog(
+    listTitle: String,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit = {},
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            Button(
+                onClick = { onConfirm() }
+            ) {
+                Text(text = "Delete")
+            }
+        },
+        dismissButton = {
+            Button(onClick = onDismiss) {
+                Text(text = "Cancel")
+            }
+        },
+        title = {
+            Text(text = "Delete $listTitle ?")
+        }
+    )
+}
+
+@Preview
+@Composable
+fun DeleteListDialogPreview() {
+    DeleteListDialog(
+        listTitle = "List 1",
         onConfirm = {},
         onDismiss = {}
     )
