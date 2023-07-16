@@ -3,14 +3,11 @@ package com.zedevstuds.price_equalizer.price_calculation.ui.mainscreen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zedevstuds.price_equalizer.price_calculation.domain.models.ProductModel
-import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.list.AddListUseCase
 import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.product.AddProductUseCase
-import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.product.ClearListUseCase
-import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.product.DeleteProductsInListUseCase
 import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.product.DeleteProductUseCase
-import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.product.GetProductsForListUseCase
-import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.product.SaveProductsUseCase
-import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.product.UpdateProductListNameUseCase
+import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.product.DeleteProductsInListUseCase
+import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.product.GetProductsForListByListIdUseCase
+import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.product.UpdateProductTitleUseCase
 import com.zedevstuds.price_equalizer.price_calculation.ui.drawer.DrawerViewModel
 import com.zedevstuds.price_equalizer.price_calculation.ui.enterparams.CurrencyUi
 import com.zedevstuds.price_equalizer.price_calculation.ui.enterparams.EnterParamsViewModel
@@ -29,13 +26,10 @@ class MainScreenViewModel(
     val enterParamsViewModel: EnterParamsViewModel,
     val drawerViewModel: DrawerViewModel,
     private val addProductUseCase: AddProductUseCase,
-    private val saveProductsUseCase: SaveProductsUseCase,
-    private val getProductsForListUseCase: GetProductsForListUseCase,
     private val deleteProductsInListUseCase: DeleteProductsInListUseCase,
     private val deleteProductUseCase: DeleteProductUseCase,
-    private val clearListUseCase: ClearListUseCase,
-    private val addListUseCase: AddListUseCase,
-    private val updateProductListNameUseCase: UpdateProductListNameUseCase,
+    private val getProductsForListByListIdUseCase: GetProductsForListByListIdUseCase,
+    private val updateProductTitleUseCase: UpdateProductTitleUseCase,
 ) : ViewModel() {
 
     val selectedProductList = drawerViewModel.selectedItem
@@ -43,7 +37,7 @@ class MainScreenViewModel(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val productList = selectedProductList.combine(sortByPrice) { listModel, isSortByPrice ->
-        getProductsForListUseCase.execute(listModel.name, isSortByPrice)
+        getProductsForListByListIdUseCase.execute(listModel.id, isSortByPrice)
     }.flatMapLatest {
         it
     }
@@ -56,7 +50,7 @@ class MainScreenViewModel(
 
     fun onDeleteProduct(product: ProductModel) {
         viewModelScope.launch {
-            deleteProductUseCase.execute(product, selectedProductList.value.name)
+            deleteProductUseCase.execute(product, selectedProductList.value.id)
         }
     }
 
@@ -74,10 +68,16 @@ class MainScreenViewModel(
     }
 
     fun onDeleteProductList() {
-        if (selectedProductList.value == DrawerViewModel.defaultList) return
+        if (selectedProductList.value.id == DrawerViewModel.DEFAULT_LIST_ID) return
         viewModelScope.launch {
-            deleteProductsInListUseCase.execute(selectedProductList.value.name)
+            deleteProductsInListUseCase.execute(selectedProductList.value.id)
             drawerViewModel.deleteCurrentProductList()
+        }
+    }
+
+    fun updateProductTitle(updatedProduct: ProductModel) {
+        viewModelScope.launch {
+            updateProductTitleUseCase.execute(updatedProduct, selectedProductList.value.id)
         }
     }
 
@@ -86,12 +86,12 @@ class MainScreenViewModel(
             enterParamsViewModel.events.collect { event ->
                 when (event) {
                     is EnterParamsViewModel.EnterParamsEvent.AddProductEvent -> {
-                        addProductUseCase.execute(event.product, selectedProductList.value.name)
+                        addProductUseCase.execute(event.product, selectedProductList.value.id)
                         delay(DELAY_BEFORE_SCROLL)
                         scrollToItem(ScrollPosition.LAST)
                     }
                     is EnterParamsViewModel.EnterParamsEvent.CleanListEvent -> {
-                        clearListUseCase.execute(selectedProductList.value.name)
+                        deleteProductsInListUseCase.execute(selectedProductList.value.id)
                     }
                 }
             }

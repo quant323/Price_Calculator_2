@@ -57,7 +57,7 @@ fun MainScreen(
                     title = currentList.value.name,
                     currency = mainViewModel.getCurrency().sign,
                     isSortEnabled = productList.value.size > 1,
-                    isDeleteEnabled = currentList.value != DrawerViewModel.defaultList,
+                    isDeleteEnabled = currentList.value.id != DrawerViewModel.DEFAULT_LIST_ID,
                     onCurrencyClicked = { showCurrencyDialog = true },
                     onSortClicked = { mainViewModel.onSortClicked() },
                     onDeleteClicked = { showDeleteListDialog = true },
@@ -75,8 +75,9 @@ fun MainScreen(
                         EnterParamsArea(viewModel = mainViewModel.enterParamsViewModel)
                     },
                     scrollToFlow = mainViewModel.scrollTo,
-                    onDeleteProduct = {
-                        mainViewModel.onDeleteProduct(it)
+                    onDeleteProduct = mainViewModel::onDeleteProduct,
+                    onUpdateProductTitle = { product ->
+                        mainViewModel.updateProductTitle(product)
                     }
                 )
             }

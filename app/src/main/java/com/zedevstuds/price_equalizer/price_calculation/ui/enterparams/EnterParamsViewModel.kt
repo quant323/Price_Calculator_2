@@ -1,9 +1,11 @@
 package com.zedevstuds.price_equalizer.price_calculation.ui.enterparams
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.text.isDigitsOnly
+import com.zedevstuds.price_equalizer.R
 import com.zedevstuds.price_equalizer.price_calculation.domain.models.MeasureUnit
 import com.zedevstuds.price_equalizer.price_calculation.domain.models.ProductModel
 import com.zedevstuds.price_equalizer.price_calculation.domain.models.getMainUnit
@@ -22,6 +24,7 @@ import java.util.Locale
 class EnterParamsViewModel(
     private val preferenceRepository: PreferenceRepository,
     private val getPriceForOneUnitUseCase: GetPriceForOneUnitUseCase,
+    private val context: Context,
     private val scope: CoroutineScope = CoroutineScope(Job() + Dispatchers.Main)
 ) {
 
@@ -137,7 +140,7 @@ class EnterParamsViewModel(
             selectedUnit = measureUnit,
             mainUnit = measureUnit.getMainUnit(),
             listOfUnits = listOfUnits,
-            title = INITIAL_TITLE,
+            title = getDefaultTitle(),
             currency = getCurrency()
         )
     }
@@ -148,8 +151,7 @@ class EnterParamsViewModel(
             enteredPrice = INITIAL_VALUE,
             customAmount = INITIAL_CUSTOM_AMOUNT,
             priceForCustomAmount = INITIAL_CUSTOM_PRICE,
-            title = INITIAL_TITLE,
-//            title = "$INITIAL_TITLE ${numberOfCreatedProducts + 1}",
+            title = getDefaultTitle(),
         )
     }
 
@@ -179,6 +181,8 @@ class EnterParamsViewModel(
         }
     }
 
+    private fun getDefaultTitle() = context.getString(R.string.default_product_title)
+
     data class EnterParamsViewState(
         val enteredAmount: String,
         val enteredPrice: String,
@@ -200,7 +204,6 @@ class EnterParamsViewModel(
         private const val INITIAL_VALUE = ""
         private const val INITIAL_CUSTOM_AMOUNT = "1"
         private const val INITIAL_CUSTOM_PRICE = "0"
-        private const val INITIAL_TITLE = "Product"
         private const val MAX_AMOUNT_LENGTH = 8
         private const val MAX_PRICE_LENGTH = 8
         private const val LANG_RUS = "ru"

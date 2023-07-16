@@ -7,7 +7,7 @@ class AddProductUseCase(
     private val productRepository: ProductRepository
 ) {
 
-    suspend fun execute(product: ProductModel, listNane: String) {
-        productRepository.insertProduct(product, listNane)
+    suspend fun execute(product: ProductModel, listId: Int) {
+        productRepository.insertProduct(product, listId)
     }
 }

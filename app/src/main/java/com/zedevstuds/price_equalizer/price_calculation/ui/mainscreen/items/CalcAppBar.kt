@@ -16,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.zedevstuds.price_equalizer.R
 
@@ -38,14 +39,17 @@ fun CalcAppBar(
             IconButton(onClick = onNavigationIconClick) {
                 Icon(
                     imageVector = Icons.Default.Menu,
-                    contentDescription = "Menu Icon"
+                    contentDescription = stringResource(R.string.show_menu_cont_desc)
                 )
             }
         },
         title = { Text(text = title) },
         actions = {
             IconButton(onClick = { onSortClicked() }, enabled = isSortEnabled) {
-                Icon(painter = painterResource(R.drawable.ic_sort_24), contentDescription = "Sort Products")
+                Icon(
+                    painter = painterResource(R.drawable.ic_sort_24),
+                    contentDescription = stringResource(R.string.sort_products_cont_desc)
+                )
             }
             IconButton(onClick = { showMenu = !showMenu }) {
                 Icon(imageVector = Icons.Default.MoreVert, contentDescription = null)
@@ -55,7 +59,7 @@ fun CalcAppBar(
                 onDismissRequest = { showMenu = false }
             ) {
                 DropdownMenuItem(
-                    text = { Text(text = "Delete List") },
+                    text = { Text(text = stringResource(R.string.delete_list_menu_title)) },
                     enabled = isDeleteEnabled,
                     onClick = {
                         onDeleteClicked()
@@ -63,7 +67,7 @@ fun CalcAppBar(
                     }
                 )
                 DropdownMenuItem(
-                    text = { Text(text = "Currency ($currency)") },
+                    text = { Text(text = stringResource(R.string.currency_menu_title, currency)) },
                     onClick = {
                         onCurrencyClicked()
                         showMenu = false

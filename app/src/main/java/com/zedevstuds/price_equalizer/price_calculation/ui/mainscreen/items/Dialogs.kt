@@ -39,12 +39,12 @@ fun EditProductTitleDialog(
             Button(
                 onClick = { onConfirm(title) }
             ) {
-                Text(text = "OK")
+                Text(text = stringResource(R.string.ok_dialog_button_title))
             }
         },
         dismissButton = {
             Button(onClick = onDismiss) {
-                Text(text = "Cancel")
+                Text(text = stringResource(R.string.cancel_dialog_button_title))
             }
         },
         title = {
@@ -63,16 +63,6 @@ fun EditProductTitleDialog(
     )
 }
 
-@Preview
-@Composable
-fun EditTitleDialogPreview() {
-    EditProductTitleDialog(
-        currentTitle = "Product 1",
-        onConfirm = {},
-        onDismiss = {}
-    )
-}
-
 @Composable
 fun SelectCurrencyDialog(
     currencyList: List<CurrencyUi>,
@@ -88,12 +78,12 @@ fun SelectCurrencyDialog(
             Button(
                 onClick = { onConfirm(currency) }
             ) {
-                Text(text = "OK")
+                Text(text = stringResource(R.string.ok_dialog_button_title))
             }
         },
         dismissButton = {
             Button(onClick = onDismiss) {
-                Text(text = "Cancel")
+                Text(text = stringResource(R.string.cancel_dialog_button_title))
             }
         },
         title = {
@@ -152,17 +142,6 @@ fun SelectCurrencyDropDown(
 
 private fun getCurrencyText(currency: CurrencyUi) = "${currency.name} (${currency.sign})"
 
-@Preview
-@Composable
-fun SelectCurrencyDialogPreview() {
-    SelectCurrencyDialog(
-        currencyList = CurrencyUi.currencyList,
-        currentCurrency = CurrencyUi.currencyList.first(),
-        onConfirm = {},
-        onDismiss = {}
-    )
-}
-
 @Composable
 fun AddListDialog(
     initialTile: String,
@@ -187,12 +166,12 @@ fun AddListDialog(
                 onClick = { onConfirm(title) },
                 enabled = isConfirmEnabled,
             ) {
-                Text(text = "OK")
+                Text(text = stringResource(R.string.ok_dialog_button_title))
             }
         },
         dismissButton = {
             Button(onClick = onDismiss) {
-                Text(text = "Cancel")
+                Text(text = stringResource(R.string.cancel_dialog_button_title))
             }
         },
         title = {
@@ -212,17 +191,6 @@ fun AddListDialog(
     )
 }
 
-@Preview
-@Composable
-fun ListTitleDialogPreview() {
-    AddListDialog(
-        initialTile = "List 1",
-        listsOfProducts = emptyList(),
-        onConfirm = {},
-        onDismiss = {}
-    )
-}
-
 @Composable
 fun DeleteListDialog(
     listTitle: String,
@@ -235,17 +203,49 @@ fun DeleteListDialog(
             Button(
                 onClick = { onConfirm() }
             ) {
-                Text(text = "Delete")
+                Text(text = stringResource(R.string.delete_dialog_button_title))
             }
         },
         dismissButton = {
             Button(onClick = onDismiss) {
-                Text(text = "Cancel")
+                Text(text = stringResource(R.string.cancel_dialog_button_title))
             }
         },
         title = {
-            Text(text = "Delete $listTitle ?")
+            Text(text = stringResource(R.string.delete_dialog_text, listTitle))
         }
+    )
+}
+
+@Preview
+@Composable
+fun EditTitleDialogPreview() {
+    EditProductTitleDialog(
+        currentTitle = "Product 1",
+        onConfirm = {},
+        onDismiss = {}
+    )
+}
+
+@Preview
+@Composable
+fun SelectCurrencyDialogPreview() {
+    SelectCurrencyDialog(
+        currencyList = CurrencyUi.currencyList,
+        currentCurrency = CurrencyUi.currencyList.first(),
+        onConfirm = {},
+        onDismiss = {}
+    )
+}
+
+@Preview
+@Composable
+fun ListTitleDialogPreview() {
+    AddListDialog(
+        initialTile = "List 1",
+        listsOfProducts = emptyList(),
+        onConfirm = {},
+        onDismiss = {}
     )
 }
 

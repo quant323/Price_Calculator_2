@@ -14,8 +14,8 @@ data class ProductDbModel(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
 
-    @ColumnInfo(name = "list_name")
-    val listName: String,
+    @ColumnInfo(name = "list_id")
+    val listId: Int,
 
     @ColumnInfo(name = "entered_amount")
     val enteredAmount: String,
@@ -46,13 +46,13 @@ fun ProductDbModel.toDomain() =
         title = title
     )
 
-fun ProductModel.toData(listName: String) =
+fun ProductModel.toData(listId: Int) =
     ProductDbModel(
         id = id,
-        listName = listName,
         enteredAmount = enteredAmount,
         enteredPrice = enteredPrice,
         selectedMeasureUnitId = selectedMeasureUnit.id,
         priceForOneUnit = priceForOneUnit,
-        title = title
+        title = title,
+        listId = listId
     )

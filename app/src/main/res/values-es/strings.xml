@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Price Calculator 2.0</string>
+    <string name="cancel_dialog_button_title">Cancelar</string>
+    <string name="delete_dialog_button_title">Borrar</string>
+    <string name="delete_dialog_text">Borrar %s?</string>
+    <string name="delete_list_menu_title">Eliminar lista</string>
+    <string name="currency_menu_title">Moneda (%s)</string>
+    <string name="amount_hint">Cantidad</string>
+    <string name="price_hint">Precio</string>
+    <string name="calc_amount_hint">Calc Cantidad</string>
+    <string name="calc_price_hint">Calc Precio</string>
+    <string name="clear_list_cont_desc">Limpiar lista</string>
+    <string name="hide_params_cont_desc">Ocultar parámetros</string>
+    <string name="close_drawer_cont_desc">Cerrar cajón</string>
+    <string name="add_list_cont_desc">Añadir lista</string>
+    <string name="show_menu_cont_desc">Muestrame el menu</string>
+    <string name="sort_products_cont_desc">Ordenar productos</string>
+    <string name="remove_item_cont_desc">Remover el artículo</string>
+    <string name="best_price_cont_desc">"Mejor precio "</string>
+    <string name="gram">g</string>
+    <string name="kilogram">kg</string>
+    <string name="liter">L</string>
+    <string name="milliliter">mL</string>
+    <string name="pics">pcs</string>
+    <string name="meter">m</string>
+    <string name="millimeter">mm</string>
+    <string name="centimeter">cm</string>
+    <string name="currency_title">Währung</string>
+    <string name="default_product_title">Producto</string>
+    <string name="default_list_title">Lista Rápida</string>
+    <string name="dialog_default_list_title">Lista</string>
+</resources>

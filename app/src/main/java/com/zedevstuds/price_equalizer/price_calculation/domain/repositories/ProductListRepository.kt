@@ -1,6 +1,5 @@
 package com.zedevstuds.price_equalizer.price_calculation.domain.repositories
 
-import com.zedevstuds.price_equalizer.price_calculation.data.database.ListDbModel
 import com.zedevstuds.price_equalizer.price_calculation.domain.models.ListModel
 import kotlinx.coroutines.flow.Flow
 

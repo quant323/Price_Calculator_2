@@ -5,12 +5,12 @@ import com.zedevstuds.price_equalizer.price_calculation.domain.repositories.Prod
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class GetProductsForListUseCase(
+class GetProductsForListByListIdUseCase(
     private val productRepository: ProductRepository
 ) {
 
-    fun execute(listName: String, isSortByPrice: Boolean): Flow<List<ProductModel>> {
-        return productRepository.getProductsByListName(listName)
+    fun execute(listId: Int, isSortByPrice: Boolean): Flow<List<ProductModel>> {
+        return productRepository.getProductsByListId(listId)
             .map {  productList ->
                 if (isSortByPrice) {
                     productList.sortedBy { it.priceForOneUnit }

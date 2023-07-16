@@ -6,5 +6,5 @@ data class ProductModel(
     val enteredPrice: String,
     val selectedMeasureUnit: MeasureUnit,
     val priceForOneUnit: Double,
-    var title: String,
+    val title: String,
 )

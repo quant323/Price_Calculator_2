@@ -13,7 +13,7 @@ android {
         minSdk 23
         targetSdk 33
         versionCode 1
-        versionName "1.0"
+        versionName "0.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -43,6 +43,17 @@ android {
     packagingOptions {
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
+
+    // Задает имя файла при генерации apk
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def project = "price_calc_2"
+            def SEP = "_"
+            def version = variant.versionName
+            def newApkName = project + SEP + version + ".apk"
+            outputFileName = new File(newApkName)
         }
     }
 }

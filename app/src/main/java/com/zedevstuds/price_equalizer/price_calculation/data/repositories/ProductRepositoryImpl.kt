@@ -14,37 +14,25 @@ class ProductRepositoryImpl(
 
     private val dao = database.productsDao
 
-    override suspend fun insertProduct(product: ProductModel, listName: String) {
-        dao.insertProduct(product.toData(listName))
+    override suspend fun insertProduct(product: ProductModel, listId: Int) {
+        dao.insertProduct(product.toData(listId))
     }
 
-    override suspend fun deleteProduct(product: ProductModel, listName: String) {
-        dao.deleteProduct(product.toData(listName))
+    override suspend fun deleteProduct(product: ProductModel, listId: Int) {
+        dao.deleteProduct(product.toData(listId))
     }
 
-    override fun getAllProducts(): Flow<List<ProductModel>> {
-        return dao.getAllProducts().map { products ->
+    override fun getProductsByListId(listId: Int): Flow<List<ProductModel>> {
+        return dao.getProductsByListId(listId).map { products ->
             products.map { it.toDomain() }
         }
     }
 
-    override fun getProductsByListName(listName: String): Flow<List<ProductModel>> {
-        return dao.getProductsByListName(listName).map { products ->
-            products.map { it.toDomain() }
-        }
+    override suspend fun deleteProductsByListId(listId: Int) {
+        dao.deleteProductsByListId(listId)
     }
 
-    override suspend fun insertProducts(products: List<ProductModel>, listName: String) {
-        dao.insertProducts(
-            products.map { it.toData(listName) }
-        )
-    }
-
-    override suspend fun deleteProductsByListName(listName: String) {
-        dao.deleteProductsByListName(listName)
-    }
-
-    override suspend fun updateProductListName(oldName: String, newName: String) {
-        dao.updateProductListName(oldName, newName)
+    override suspend fun updateProduct(updatedProduct: ProductModel, listId: Int) {
+        dao.updateProduct(updatedProduct.toData(listId))
     }
 }

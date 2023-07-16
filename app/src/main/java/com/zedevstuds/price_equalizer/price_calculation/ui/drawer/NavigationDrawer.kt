@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -63,7 +64,7 @@ fun NavigationDrawer(
 
     if (showAddListDialog) {
         AddListDialog(
-            initialTile = DrawerViewModel.DEFAULT_LIST_NAME,
+            initialTile = stringResource(R.string.dialog_default_list_title),
             listsOfProducts = items.value,
             onConfirm = { title ->
                 viewModel.addList(title)
@@ -94,7 +95,7 @@ fun NavDrawerContent(
         ) {
             Icon(
                 imageVector = Icons.Filled.ArrowBack,
-                contentDescription = "Close Drawer",
+                contentDescription = stringResource(R.string.close_drawer_cont_desc),
                 modifier = Modifier.clickable {
                     onBackClicked()
                 }
@@ -120,7 +121,7 @@ fun NavDrawerContent(
         ) {
             Icon(
                 painter = painterResource(R.drawable.ic_add_circle_outline_24),
-                contentDescription = "Save List"
+                contentDescription = stringResource(R.string.add_list_cont_desc)
             )
         }
         Box(modifier = Modifier.height(8.dp))

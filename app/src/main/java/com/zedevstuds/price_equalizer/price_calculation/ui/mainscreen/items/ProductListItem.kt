@@ -19,6 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.zedevstuds.price_equalizer.R
 import com.zedevstuds.price_equalizer.core.ui.theme.PriceCalculatorTheme
 import com.zedevstuds.price_equalizer.price_calculation.domain.models.MeasureUnit
 import com.zedevstuds.price_equalizer.price_calculation.domain.models.ProductModel
@@ -64,7 +65,7 @@ fun ProductListItem(
             )
             Icon(
                 imageVector = Icons.Filled.Close,
-                contentDescription = "Remove Item",
+                contentDescription = stringResource(R.string.remove_item_cont_desc),
                 modifier = Modifier.clickable { onDeleteClicked() }
             )
         }
@@ -75,7 +76,10 @@ fun ProductListItem(
                 style = MaterialTheme.typography.titleLarge
             )
             if (product == bestPriceProduct) {
-                Icon(imageVector = Icons.Filled.ThumbUp, contentDescription = "Best Price!")
+                Icon(
+                    imageVector = Icons.Filled.ThumbUp,
+                    contentDescription = stringResource(R.string.best_price_cont_desc)
+                )
             }
         }
         Text(

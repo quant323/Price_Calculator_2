@@ -1,12 +1,13 @@
 package com.zedevstuds.price_equalizer.price_calculation.domain.usecases.product
 
+import com.zedevstuds.price_equalizer.price_calculation.domain.models.ProductModel
 import com.zedevstuds.price_equalizer.price_calculation.domain.repositories.ProductRepository
 
-class ClearListUseCase(
+class UpdateProductTitleUseCase(
     private val productRepository: ProductRepository
 ) {
 
-    suspend fun execute(listName: String) {
-        productRepository.deleteProductsByListName(listName)
+    suspend fun execute(product: ProductModel, listId: Int) {
+        productRepository.updateProduct(product, listId)
     }
 }

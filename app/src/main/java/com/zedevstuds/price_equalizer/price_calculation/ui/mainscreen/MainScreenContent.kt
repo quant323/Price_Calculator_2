@@ -27,7 +27,8 @@ fun MainScreenContent(
     currency: String,
     scrollToFlow: Flow<MainScreenViewModel.ScrollPosition>,
     enterParamsArea: @Composable () -> Unit,
-    onDeleteProduct: (ProductModel) -> Unit
+    onDeleteProduct: (ProductModel) -> Unit,
+    onUpdateProductTitle: (ProductModel) -> Unit,
 ) {
     val scrollState = rememberLazyListState()
 
@@ -70,7 +71,7 @@ fun MainScreenContent(
             EditProductTitleDialog(
                 currentTitle = product.title,
                 onConfirm = {
-                    product.title = it
+                    onUpdateProductTitle(product.copy(title = it))
                     productToEdit = null
                 },
                 onDismiss = { productToEdit = null }

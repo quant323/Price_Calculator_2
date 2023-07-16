@@ -1,5 +1,24 @@
 <resources>
-    <string name="app_name">PriceCalculator</string>
+    <string name="app_name">Price Calculator 2.0</string>
+
+    <string name="ok_dialog_button_title"  translatable="false">OK</string>
+    <string name="cancel_dialog_button_title">Cancel</string>
+    <string name="delete_dialog_button_title">Delete</string>
+    <string name="delete_dialog_text">Delete %s?</string>
+    <string name="delete_list_menu_title">Delete List</string>
+    <string name="currency_menu_title">Currency (%s)</string>
+    <string name="amount_hint">Amount</string>
+    <string name="price_hint">Price</string>
+    <string name="calc_amount_hint">Calc Amount</string>
+    <string name="calc_price_hint">Calc Price</string>
+    <string name="clear_list_cont_desc">Clear List</string>
+    <string name="hide_params_cont_desc">Hide Params</string>
+    <string name="close_drawer_cont_desc">Close Drawer</string>
+    <string name="add_list_cont_desc">Add List</string>
+    <string name="show_menu_cont_desc">Show Menu</string>
+    <string name="sort_products_cont_desc">Sort Products</string>
+    <string name="remove_item_cont_desc">Remove Item</string>
+    <string name="best_price_cont_desc">Best Price</string>
 
     <!--Measure Units-->
     <string name="gram">g</string>
@@ -35,4 +54,8 @@
     <string name="philip_sign" translatable="false">₱</string>
     <string name="mexican_name" translatable="false">MXN</string>
     <string name="mexican_sign" translatable="false">$</string>
+
+    <string name="default_product_title">Product</string>
+    <string name="default_list_title">Fast List</string>
+    <string name="dialog_default_list_title">List</string>
 </resources>

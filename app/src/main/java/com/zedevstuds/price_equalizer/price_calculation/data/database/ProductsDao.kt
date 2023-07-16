@@ -20,20 +20,9 @@ interface ProductsDao {
     @Update
     suspend fun updateProduct(productDbModel: ProductDbModel)
 
-    @Query("SELECT * FROM products_table")
-    fun getAllProducts(): Flow<List<ProductDbModel>>
+    @Query("SELECT * FROM products_table WHERE list_id = :listId")
+    fun getProductsByListId(listId: Int): Flow<List<ProductDbModel>>
 
-    @Query("SELECT * FROM products_table WHERE list_name = :listName")
-    fun getProductsByListName(listName: String): Flow<List<ProductDbModel>>
-
-    @Query("UPDATE products_table SET list_name = :newName WHERE list_name = :oldName")
-    suspend fun updateProductListName(oldName: String, newName: String)
-
-
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertProducts(products: List<ProductDbModel>)
-
-    @Query("DELETE FROM products_table WHERE list_name = :listName")
-    suspend fun deleteProductsByListName(listName: String)
+    @Query("DELETE FROM products_table WHERE list_id = :listId")
+    suspend fun deleteProductsByListId(listId: Int)
 }

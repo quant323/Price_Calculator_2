@@ -1,5 +1,7 @@
 package com.zedevstuds.price_equalizer.price_calculation.ui.drawer
 
+import android.content.Context
+import com.zedevstuds.price_equalizer.R
 import com.zedevstuds.price_equalizer.price_calculation.domain.models.ListModel
 import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.list.AddListUseCase
 import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.list.DeleteListUseCase
@@ -15,8 +17,14 @@ class DrawerViewModel(
     getAllListsUseCase: GetAllListsUseCase,
     private val addListUseCase: AddListUseCase,
     private val deleteListUseCase: DeleteListUseCase,
+    context: Context,
     private val scope: CoroutineScope = CoroutineScope(Job() + Dispatchers.Main)
 ) {
+
+    private val defaultList = ListModel(
+        id = DEFAULT_LIST_ID,
+        name = context.getString(R.string.default_list_title)
+    )
 
     val selectedItem = MutableStateFlow(defaultList)
 
@@ -53,10 +61,6 @@ class DrawerViewModel(
     }
 
     companion object {
-        const val DEFAULT_LIST_NAME = "Fast List"
-        val defaultList = ListModel(
-            id = -1,
-            name = DEFAULT_LIST_NAME
-        )
+        const val DEFAULT_LIST_ID = -1
     }
 }

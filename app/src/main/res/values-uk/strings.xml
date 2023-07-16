@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Калькулятор Цен 2.0</string>
+    <string name="cancel_dialog_button_title">Отмена</string>
+    <string name="delete_dialog_button_title">Удалить</string>
+    <string name="delete_dialog_text">Удалить %s?</string>
+    <string name="delete_list_menu_title">Удалить лист</string>
+    <string name="currency_menu_title">Валюта (%s)</string>
+    <string name="amount_hint">Кол-во</string>
+    <string name="price_hint">Цена</string>
+    <string name="calc_amount_hint">Расч. кол-во</string>
+    <string name="calc_price_hint">Расч. цена</string>
+    <string name="clear_list_cont_desc">Очистить список</string>
+    <string name="hide_params_cont_desc">Скрыть параметры</string>
+    <string name="close_drawer_cont_desc">Закрыть шторку</string>
+    <string name="add_list_cont_desc">Добавить список</string>
+    <string name="show_menu_cont_desc">Показать меню</string>
+    <string name="sort_products_cont_desc">Отсортировать список</string>
+    <string name="remove_item_cont_desc">Удалить элемент</string>
+    <string name="best_price_cont_desc">Лучшая цена</string>
+    <string name="gram">г</string>
+    <string name="kilogram">кг</string>
+    <string name="liter">Л</string>
+    <string name="milliliter">мЛ</string>
+    <string name="pics">шт.</string>
+    <string name="meter">м</string>
+    <string name="millimeter">мм</string>
+    <string name="centimeter">см</string>
+    <string name="currency_title">Валюта</string>
+    <string name="default_product_title">Продукт</string>
+    <string name="default_list_title">Быстрый список</string>
+    <string name="dialog_default_list_title">Список</string>
+</resources>

@@ -7,7 +7,7 @@ class DeleteProductUseCase(
     private val productRepository: ProductRepository
 ) {
 
-    suspend fun execute(product: ProductModel, listName: String) {
-        productRepository.deleteProduct(product, listName)
+    suspend fun execute(product: ProductModel, listId: Int) {
+        productRepository.deleteProduct(product, listId)
     }
 }

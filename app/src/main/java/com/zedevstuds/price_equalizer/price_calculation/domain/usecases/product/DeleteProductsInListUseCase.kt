@@ -6,7 +6,7 @@ class DeleteProductsInListUseCase(
     private val productRepository: ProductRepository
 ) {
 
-    suspend fun execute(listName: String) {
-        productRepository.deleteProductsByListName(listName)
+    suspend fun execute(listId: Int) {
+        productRepository.deleteProductsByListId(listId)
     }
 }

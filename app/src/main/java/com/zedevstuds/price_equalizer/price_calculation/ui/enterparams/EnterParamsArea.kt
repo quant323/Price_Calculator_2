@@ -111,7 +111,7 @@ fun EnterParamsAreaContent(
             Row {
                 EnterField(
                     text = viewState.customAmount,
-                    hint = "Custom Amount",
+                    hint = stringResource(R.string.calc_amount_hint),
                     modifier = Modifier.weight(1f),
                     trailingText = stringResource(id = viewState.mainUnit.toStringResId()),
                     readOnly = true,
@@ -119,7 +119,7 @@ fun EnterParamsAreaContent(
                 HorizontalSpacer()
                 EnterField(
                     text = viewState.priceForCustomAmount,
-                    hint = "Custom Price",
+                    hint = stringResource(R.string.calc_price_hint),
                     modifier = Modifier.weight(1f),
                     trailingText = viewState.currency.sign,
                     readOnly = true,
@@ -128,7 +128,7 @@ fun EnterParamsAreaContent(
             Row {
                 EnterField(
                     text = viewState.enteredAmount,
-                    hint = "Amount",
+                    hint = stringResource(R.string.amount_hint),
                     onTextChanged = onAmountChanged,
                     modifier = Modifier
                         .weight(1.0f)
@@ -142,7 +142,7 @@ fun EnterParamsAreaContent(
                 HorizontalSpacer()
                 EnterField(
                     text = viewState.enteredPrice,
-                    hint = "Price",
+                    hint = stringResource(R.string.price_hint),
                     onTextChanged = onPriceChanged,
                     modifier = Modifier.weight(1.0f),
                     trailingText = viewState.currency.sign,
@@ -228,7 +228,10 @@ fun EnterChipsSection(
                 selected = false,
                 onClick = onClear,
                 label = {
-                    Icon(imageVector = Icons.Outlined.Delete, contentDescription = "Clear")
+                    Icon(
+                        imageVector = Icons.Outlined.Delete,
+                        contentDescription = stringResource(R.string.clear_list_cont_desc)
+                    )
                 }
             )
             InputChip(
@@ -237,14 +240,19 @@ fun EnterChipsSection(
                 label = {
                     Icon(
                         imageVector = if (isHidden) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
-                        contentDescription = "Hide Icon"
+                        contentDescription = stringResource(R.string.hide_params_cont_desc)
                     )
                 }
             )
             InputChip(
                 selected = false,
                 onClick = onOk,
-                label = { Text(text = "OK", style = MaterialTheme.typography.titleMedium) }
+                label = {
+                    Text(
+                        text = stringResource(R.string.ok_dialog_button_title),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
             )
         }
     }
@@ -266,7 +274,10 @@ fun EnterField(
         label = { Text(hint) },
         singleLine = true,
         modifier = modifier,
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal, imeAction = ImeAction.Done),
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Decimal,
+            imeAction = ImeAction.Done
+        ),
         trailingIcon = { Text(text = trailingText) },
         textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.End),
         readOnly = readOnly,
@@ -298,7 +309,7 @@ fun MeasureUnit.toStringResId(): Int {
 fun EnterParamsAreaPreview() {
     PriceCalculatorTheme {
         EnterParamsAreaContent(
-            defaultEnterParamsViewState,
+            testEnterParamsViewState,
             {},
             {},
             {},
@@ -309,7 +320,7 @@ fun EnterParamsAreaPreview() {
     }
 }
 
-private val defaultEnterParamsViewState = EnterParamsViewModel.EnterParamsViewState(
+private val testEnterParamsViewState = EnterParamsViewModel.EnterParamsViewState(
     enteredAmount = "5",
     enteredPrice = "10",
     customAmount = "1",
