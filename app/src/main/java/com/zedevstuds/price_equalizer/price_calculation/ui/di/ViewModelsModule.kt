@@ -18,8 +18,6 @@ val viewModelsModule = module {
     factory {
         DrawerViewModel(
             getAllListsUseCase = get(),
-            deleteListUseCase = get(),
-            addListUseCase = get(),
             context = androidContext(),
         )
     }
@@ -32,6 +30,9 @@ val viewModelsModule = module {
             deleteProductUseCase = get(),
             getProductsForListByListIdUseCase = get(),
             updateProductTitleUseCase = get(),
+            deleteListUseCase = get(),
+            addListUseCase = get(),
+            updateListUseCase = get(),
         )
     }
 }

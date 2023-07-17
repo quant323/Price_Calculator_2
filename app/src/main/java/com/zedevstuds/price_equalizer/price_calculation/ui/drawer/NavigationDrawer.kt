@@ -1,7 +1,11 @@
 package com.zedevstuds.price_equalizer.price_calculation.ui.drawer
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -9,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -18,10 +23,6 @@ import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -32,7 +33,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.zedevstuds.price_equalizer.R
 import com.zedevstuds.price_equalizer.price_calculation.domain.models.ListModel
-import com.zedevstuds.price_equalizer.price_calculation.ui.mainscreen.items.AddListDialog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -42,47 +42,37 @@ private const val DRAWER_WIDTH = 0.8
 @Composable
 fun NavigationDrawer(
     viewModel: DrawerViewModel,
+    version: String,
     scope: CoroutineScope,
     drawerState: DrawerState,
+    onEditList: (ListModel) -> Unit
 ) {
     val items = viewModel.listsOfProducts.collectAsState(emptyList())
     val selectedItem = viewModel.selectedItem.collectAsState()
-    var showAddListDialog by remember { mutableStateOf(false) }
 
     NavDrawerContent(
         itemLists = items.value,
         selectedItem = selectedItem.value,
+        version = version,
         onListClicked = { item ->
             viewModel.onListClicked(item)
             scope.launch { drawerState.close() }
         },
+        onEditListClicked = onEditList,
         onBackClicked = {
             scope.launch { drawerState.close() }
-        },
-        onAddListClicked = { showAddListDialog = true }
+        }
     )
-
-    if (showAddListDialog) {
-        AddListDialog(
-            initialTile = stringResource(R.string.dialog_default_list_title),
-            listsOfProducts = items.value,
-            onConfirm = { title ->
-                viewModel.addList(title)
-                showAddListDialog = false
-                scope.launch { drawerState.close() }
-            },
-            onDismiss = { showAddListDialog = false }
-        )
-    }
 }
 
 @Composable
 fun NavDrawerContent(
     itemLists: List<ListModel>,
     selectedItem: ListModel,
+    version: String,
     onListClicked: (ListModel) -> Unit,
+    onEditListClicked: (ListModel) -> Unit,
     onBackClicked: () -> Unit,
-    onAddListClicked: () -> Unit
 ) {
     val drawerWidth = getDrawerWidth(LocalConfiguration.current.screenWidthDp)
 
@@ -105,27 +95,57 @@ fun NavDrawerContent(
             modifier = Modifier.weight(1f),
         ) {
             items(itemLists) {productList ->
-                NavigationDrawerItem(
-                    label = { Text(productList.name) },
+                MenuItemDrawer(
+                    title = productList.name,
                     selected = productList == selectedItem,
-                    onClick = {
+                    isEditVisible = productList.id != DrawerViewModel.DEFAULT_LIST_ID,
+                    onItemClicked = {
                         onListClicked(productList)
                     },
-                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                    onEditTitleClicked = {
+                        onEditListClicked(productList)
+                    }
                 )
             }
         }
-        IconButton(
-            onClick = { onAddListClicked() },
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.ic_add_circle_outline_24),
-                contentDescription = stringResource(R.string.add_list_cont_desc)
-            )
-        }
-        Box(modifier = Modifier.height(8.dp))
+        NavigationDrawerItem(
+            label = { Text(text = stringResource(R.string.version_text, version)) },
+            selected = false,
+            onClick = { },
+            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+        )
     }
+}
+
+@Composable
+fun MenuItemDrawer(
+    title: String,
+    selected: Boolean,
+    isEditVisible: Boolean,
+    onItemClicked: () -> Unit,
+    onEditTitleClicked: () -> Unit
+) {
+    NavigationDrawerItem(
+        label = {
+            Row(
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(text = title, modifier = Modifier.weight(1f))
+                if (isEditVisible) {
+                    IconButton(onClick = onEditTitleClicked) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_edit_24),
+                            contentDescription = stringResource(R.string.edit_list_cont_desc)
+                        )
+                    }
+                }
+            }
+        },
+        selected = selected,
+        onClick = onItemClicked,
+        modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+    )
 }
 
 private fun getDrawerWidth(screenWidth: Int): Dp = (screenWidth * DRAWER_WIDTH).toInt().dp
@@ -136,9 +156,22 @@ fun DrawerPreview() {
     NavDrawerContent(
         itemLists = listItems,
         selectedItem = listItems.first(),
+        version = "0.2",
         onListClicked = {},
+        onEditListClicked = {},
         onBackClicked = {},
-        onAddListClicked = {}
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun MenuItemDrawerPreview() {
+    MenuItemDrawer(
+        title = "Fast List",
+        selected = false,
+        isEditVisible = true,
+        onItemClicked = {},
+        onEditTitleClicked = {}
     )
 }
 

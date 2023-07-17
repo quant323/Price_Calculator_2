@@ -2,7 +2,12 @@ package com.zedevstuds.price_equalizer.price_calculation.ui.mainscreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.zedevstuds.price_equalizer.BuildConfig
+import com.zedevstuds.price_equalizer.price_calculation.domain.models.ListModel
 import com.zedevstuds.price_equalizer.price_calculation.domain.models.ProductModel
+import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.list.AddListUseCase
+import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.list.DeleteListUseCase
+import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.list.UpdateListUseCase
 import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.product.AddProductUseCase
 import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.product.DeleteProductUseCase
 import com.zedevstuds.price_equalizer.price_calculation.domain.usecases.product.DeleteProductsInListUseCase
@@ -30,13 +35,17 @@ class MainScreenViewModel(
     private val deleteProductUseCase: DeleteProductUseCase,
     private val getProductsForListByListIdUseCase: GetProductsForListByListIdUseCase,
     private val updateProductTitleUseCase: UpdateProductTitleUseCase,
+    private val addListUseCase: AddListUseCase,
+    private val deleteListUseCase: DeleteListUseCase,
+    private val updateListUseCase: UpdateListUseCase,
 ) : ViewModel() {
 
     val selectedProductList = drawerViewModel.selectedItem
-    private val sortByPrice = MutableStateFlow(false)
+    val allLists = drawerViewModel.listsOfProducts
+    val isSortApplied = MutableStateFlow(false)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val productList = selectedProductList.combine(sortByPrice) { listModel, isSortByPrice ->
+    val productList = selectedProductList.combine(isSortApplied) { listModel, isSortByPrice ->
         getProductsForListByListIdUseCase.execute(listModel.id, isSortByPrice)
     }.flatMapLatest {
         it
@@ -62,16 +71,28 @@ class MainScreenViewModel(
 
     fun onSortClicked() {
         viewModelScope.launch {
-            sortByPrice.value = !sortByPrice.value
+            isSortApplied.value = !isSortApplied.value
             scrollToItem(ScrollPosition.FIRST)
         }
     }
 
-    fun onDeleteProductList() {
+    fun addProductList(listName: String) {
+        viewModelScope.launch {
+            addListUseCase.execute(listName)
+        }
+    }
+
+    fun updateListTitle(listModel: ListModel) {
+        viewModelScope.launch {
+            updateListUseCase.execute(listModel)
+        }
+    }
+
+    fun deleteProductList() {
         if (selectedProductList.value.id == DrawerViewModel.DEFAULT_LIST_ID) return
         viewModelScope.launch {
             deleteProductsInListUseCase.execute(selectedProductList.value.id)
-            drawerViewModel.deleteCurrentProductList()
+            deleteListUseCase.execute(selectedProductList.value)
         }
     }
 
@@ -80,6 +101,8 @@ class MainScreenViewModel(
             updateProductTitleUseCase.execute(updatedProduct, selectedProductList.value.id)
         }
     }
+
+    fun getVersionName() = BuildConfig.VERSION_NAME
 
     private fun subscribeToEnterParamsEvents() {
         viewModelScope.launch {

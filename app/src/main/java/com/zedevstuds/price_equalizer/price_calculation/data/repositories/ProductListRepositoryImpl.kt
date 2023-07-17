@@ -1,6 +1,5 @@
 package com.zedevstuds.price_equalizer.price_calculation.data.repositories
 
-import com.zedevstuds.price_equalizer.price_calculation.data.database.ListDbModel
 import com.zedevstuds.price_equalizer.price_calculation.data.database.ProductsDatabase
 import com.zedevstuds.price_equalizer.price_calculation.data.database.toData
 import com.zedevstuds.price_equalizer.price_calculation.data.database.toDomain
@@ -21,11 +20,15 @@ class ProductListRepositoryImpl(
         }
     }
 
-    override suspend fun addList(listDbModel: ListModel) {
-        dao.insertList(listDbModel.toData())
+    override suspend fun addList(listModel: ListModel) {
+        dao.insertList(listModel.toData())
     }
 
-    override suspend fun deleteList(listDbModel: ListModel) {
-        dao.deleteList(listDbModel.toData())
+    override suspend fun deleteList(listModel: ListModel) {
+        dao.deleteList(listModel.toData())
+    }
+
+    override suspend fun updateList(listModel: ListModel) {
+        dao.updateList(listModel.toData())
     }
 }

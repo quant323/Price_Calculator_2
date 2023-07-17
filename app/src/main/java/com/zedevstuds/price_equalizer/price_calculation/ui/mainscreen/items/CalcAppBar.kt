@@ -26,10 +26,12 @@ fun CalcAppBar(
     title: String,
     currency: String,
     isSortEnabled: Boolean,
+    isSortApplied: Boolean,
     isDeleteEnabled: Boolean,
     onCurrencyClicked: () -> Unit,
     onSortClicked: () -> Unit,
-    onDeleteClicked: () -> Unit,
+    onCreateListClicked: () -> Unit,
+    onDeleteListClicked: () -> Unit,
     onNavigationIconClick: () -> Unit,
 ) {
     var showMenu by remember { mutableStateOf(false) }
@@ -47,7 +49,10 @@ fun CalcAppBar(
         actions = {
             IconButton(onClick = { onSortClicked() }, enabled = isSortEnabled) {
                 Icon(
-                    painter = painterResource(R.drawable.ic_sort_24),
+                    painter = painterResource(
+                        id = if (isSortApplied) R.drawable.ic_filter_list_off_24
+                        else R.drawable.ic_filter_list_24
+                    ),
                     contentDescription = stringResource(R.string.sort_products_cont_desc)
                 )
             }
@@ -59,10 +64,17 @@ fun CalcAppBar(
                 onDismissRequest = { showMenu = false }
             ) {
                 DropdownMenuItem(
+                    text = { Text(text = stringResource(R.string.create_list_menu_title)) },
+                    onClick = {
+                        onCreateListClicked()
+                        showMenu = false
+                    }
+                )
+                DropdownMenuItem(
                     text = { Text(text = stringResource(R.string.delete_list_menu_title)) },
                     enabled = isDeleteEnabled,
                     onClick = {
-                        onDeleteClicked()
+                        onDeleteListClicked()
                         showMenu = false
                     }
                 )
@@ -88,11 +100,13 @@ fun CalcAppBarPreview() {
     CalcAppBar(
         title = "Fast List",
         currency = "$",
+        isSortApplied = false,
         isSortEnabled = true,
         isDeleteEnabled = true,
         onCurrencyClicked = {},
         onSortClicked = {},
-        onDeleteClicked = {},
+        onCreateListClicked = {},
+        onDeleteListClicked = {},
         onNavigationIconClick = {}
     )
 }

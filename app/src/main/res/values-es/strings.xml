@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Price Calculator 2.0</string>
+    <string name="app_name">Price Calculator 2</string>
     <string name="cancel_dialog_button_title">Cancelar</string>
     <string name="delete_dialog_button_title">Borrar</string>
     <string name="delete_dialog_text">Borrar %s?</string>
+    <string name="create_list_menu_title">Crear lista</string>
     <string name="delete_list_menu_title">Eliminar lista</string>
     <string name="currency_menu_title">Moneda (%s)</string>
     <string name="amount_hint">Cantidad</string>
@@ -30,4 +31,5 @@
     <string name="default_product_title">Producto</string>
     <string name="default_list_title">Lista Rápida</string>
     <string name="dialog_default_list_title">Lista</string>
+    <string name="edit_list_cont_desc">Editar nombre de lista</string>
 </resources>

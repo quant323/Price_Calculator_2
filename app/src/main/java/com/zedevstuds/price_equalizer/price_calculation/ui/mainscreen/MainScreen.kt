@@ -16,13 +16,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import com.zedevstuds.price_equalizer.R
 import com.zedevstuds.price_equalizer.core.ui.theme.PriceCalculatorTheme
-import com.zedevstuds.price_equalizer.price_calculation.ui.enterparams.EnterParamsArea
-import com.zedevstuds.price_equalizer.price_calculation.ui.drawer.NavigationDrawer
+import com.zedevstuds.price_equalizer.price_calculation.domain.models.ListModel
 import com.zedevstuds.price_equalizer.price_calculation.ui.drawer.DrawerViewModel
+import com.zedevstuds.price_equalizer.price_calculation.ui.drawer.NavigationDrawer
 import com.zedevstuds.price_equalizer.price_calculation.ui.enterparams.CurrencyUi
+import com.zedevstuds.price_equalizer.price_calculation.ui.enterparams.EnterParamsArea
+import com.zedevstuds.price_equalizer.price_calculation.ui.mainscreen.items.AddListDialog
 import com.zedevstuds.price_equalizer.price_calculation.ui.mainscreen.items.CalcAppBar
 import com.zedevstuds.price_equalizer.price_calculation.ui.mainscreen.items.DeleteListDialog
 import com.zedevstuds.price_equalizer.price_calculation.ui.mainscreen.items.SelectCurrencyDialog
@@ -38,16 +42,24 @@ fun MainScreen(
     val coroutineScope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     var showCurrencyDialog by remember { mutableStateOf(false) }
+    var showAddListDialog by remember { mutableStateOf(false) }
     var showDeleteListDialog by remember { mutableStateOf(false) }
     val currentList = mainViewModel.selectedProductList.collectAsState()
+    val allLists = mainViewModel.allLists.collectAsState(emptyList())
+    val isSortApplied = mainViewModel.isSortApplied.collectAsState()
+    var listToChangeName by remember { mutableStateOf<ListModel?>(null) }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
             NavigationDrawer(
                 viewModel = mainViewModel.drawerViewModel,
+                version = mainViewModel.getVersionName(),
                 scope = coroutineScope,
                 drawerState = drawerState,
+                onEditList = {
+                    listToChangeName = it
+                }
             )
         }
     ) {
@@ -57,10 +69,12 @@ fun MainScreen(
                     title = currentList.value.name,
                     currency = mainViewModel.getCurrency().sign,
                     isSortEnabled = productList.value.size > 1,
+                    isSortApplied = isSortApplied.value,
                     isDeleteEnabled = currentList.value.id != DrawerViewModel.DEFAULT_LIST_ID,
                     onCurrencyClicked = { showCurrencyDialog = true },
-                    onSortClicked = { mainViewModel.onSortClicked() },
-                    onDeleteClicked = { showDeleteListDialog = true },
+                    onSortClicked = mainViewModel::onSortClicked,
+                    onCreateListClicked = { showAddListDialog = true },
+                    onDeleteListClicked = { showDeleteListDialog = true },
                     onNavigationIconClick = {
                         coroutineScope.launch { drawerState.open() }
                     }
@@ -69,7 +83,7 @@ fun MainScreen(
         ) { contentPadding ->
             Column(modifier = Modifier.padding(top = contentPadding.calculateTopPadding())) {
                 MainScreenContent(
-                    productList = productList,
+                    productList = productList.value,
                     currency = mainViewModel.getCurrency().sign,
                     enterParamsArea = {
                         EnterParamsArea(viewModel = mainViewModel.enterParamsViewModel)
@@ -92,14 +106,37 @@ fun MainScreen(
                     onDismiss = { showCurrencyDialog = false }
                 )
             }
+            if (showAddListDialog) {
+                AddListDialog(
+                    initialTile = stringResource(R.string.dialog_default_list_title),
+                    listsOfProducts = allLists.value,
+                    onConfirm = { title ->
+                        mainViewModel.addProductList(title)
+                        showAddListDialog = false
+                        coroutineScope.launch { drawerState.close() }
+                    },
+                    onDismiss = { showAddListDialog = false }
+                )
+            }
             if (showDeleteListDialog) {
                 DeleteListDialog(
                     listTitle = currentList.value.name,
                     onConfirm = {
-                        mainViewModel.onDeleteProductList()
+                        mainViewModel.deleteProductList()
                         showDeleteListDialog = false
                     },
                     onDismiss = { showDeleteListDialog = false }
+                )
+            }
+            listToChangeName?.let { listModel ->
+                AddListDialog(
+                    initialTile = listModel.name,
+                    listsOfProducts = allLists.value,
+                    onConfirm = { title ->
+                        mainViewModel.updateListTitle(listModel.copy(name = title))
+                        listToChangeName = null
+                    },
+                    onDismiss = { listToChangeName = null }
                 )
             }
         }

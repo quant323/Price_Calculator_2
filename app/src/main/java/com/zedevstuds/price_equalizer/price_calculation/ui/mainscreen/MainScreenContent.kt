@@ -9,21 +9,23 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.zedevstuds.price_equalizer.price_calculation.domain.models.MeasureUnit
 import com.zedevstuds.price_equalizer.price_calculation.domain.models.ProductModel
 import com.zedevstuds.price_equalizer.price_calculation.ui.mainscreen.items.EditProductTitleDialog
 import com.zedevstuds.price_equalizer.price_calculation.ui.mainscreen.items.ProductListItem
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 @Composable
 fun MainScreenContent(
-    productList: State<List<ProductModel>>,
+    productList: List<ProductModel>,
     currency: String,
     scrollToFlow: Flow<MainScreenViewModel.ScrollPosition>,
     enterParamsArea: @Composable () -> Unit,
@@ -47,10 +49,10 @@ fun MainScreenContent(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             state = scrollState
         ) {
-            itemsIndexed(productList.value) {index, product ->
+            itemsIndexed(productList) {index, product ->
                 ProductListItem(
                     product = product,
-                    bestPriceProduct = getBestPriceProduct(productList.value),
+                    bestPriceProduct = getBestPriceProduct(productList),
                     currency = currency,
                     index = index + 1,
                     modifier = Modifier.fillMaxWidth(),
@@ -62,9 +64,6 @@ fun MainScreenContent(
                     }
                 )
             }
-//            items(30) {
-//                ProductListItem(title = "Product 1",  enteredParams = "5", calculatedParams = "10")
-//            }
         }
         enterParamsArea()
         productToEdit?.let { product ->
@@ -81,10 +80,10 @@ fun MainScreenContent(
 
     LaunchedEffect(Unit) {
         scrollToFlow.collect {
-            if (productList.value.isEmpty()) return@collect
+            if (productList.isEmpty()) return@collect
             val itemIndex = when (it) {
                 MainScreenViewModel.ScrollPosition.FIRST -> 0
-                MainScreenViewModel.ScrollPosition.LAST -> productList.value.lastIndex
+                MainScreenViewModel.ScrollPosition.LAST -> productList.lastIndex
             }
             scrollState.scrollToItem(itemIndex)
         }
@@ -96,3 +95,36 @@ private fun getBestPriceProduct(productList: List<ProductModel>): ProductModel? 
         productList.minByOrNull { it.priceForOneUnit }
     } else null
 }
+
+@Preview(showBackground = true)
+@Composable
+fun MainScreenContentPreview() {
+    MainScreenContent(
+        productList = productModels,
+        currency = "$",
+        scrollToFlow = flow {  },
+        enterParamsArea = {},
+        onDeleteProduct = {},
+        onUpdateProductTitle = {}
+    )
+}
+
+private val productModel =
+    ProductModel(
+        id = 1,
+        enteredAmount = "5",
+        enteredPrice = "7",
+        selectedMeasureUnit = MeasureUnit.KG,
+        priceForOneUnit = 11.2,
+        title = "Product"
+    )
+
+private val productModels = listOf(
+    productModel,
+    productModel,
+    productModel,
+    productModel,
+    productModel,
+    productModel,
+    productModel
+)

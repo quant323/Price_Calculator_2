@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -15,6 +16,9 @@ interface ListsDao {
 
     @Delete
     suspend fun deleteList(listDbModel: ListDbModel)
+
+    @Update
+    suspend fun updateList(listDbModel: ListDbModel)
 
     @Query("SELECT * FROM lists_table")
     fun getAllLists(): Flow<List<ListDbModel>>

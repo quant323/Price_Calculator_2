@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Prix Calculateur 2.0</string>
+    <string name="app_name">Prix Calculateur 2</string>
     <string name="cancel_dialog_button_title">Annulez</string>
     <string name="delete_dialog_button_title">Effacer</string>
     <string name="delete_dialog_text">Effacer %s?</string>
+    <string name="create_list_menu_title">Créer liste</string>
     <string name="delete_list_menu_title">Supprimer liste</string>
     <string name="currency_menu_title">Devise</string>
     <string name="amount_hint">Montant</string>
@@ -30,4 +31,5 @@
     <string name="default_product_title">Produit</string>
     <string name="default_list_title">Liste rapide</string>
     <string name="dialog_default_list_title">Liste</string>
+    <string name="edit_list_cont_desc">Modifier le nom de la liste</string>
 </resources>
