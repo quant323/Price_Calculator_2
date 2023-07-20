@@ -5,15 +5,15 @@ plugins {
 }
 
 android {
-    namespace 'com.zedevstuds.price_equalizer'
+    namespace 'com.zedevstuds.price_equalizer_redesign'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.zedevstuds.price_equalizer2"
+        applicationId "com.zedevstuds.price_equalizer_redesign"
         minSdk 23
         targetSdk 33
         versionCode 1
-        versionName "0.2"
+        versionName "0.3"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

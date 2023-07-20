@@ -22,6 +22,9 @@
     <string name="best_price_cont_desc">Best Price</string>
     <string name="version_text" translatable="false">ver. %s</string>
     <string name="edit_list_cont_desc">Edit List Name</string>
+    <string name="create_list_dialog_title">Create List</string>
+    <string name="edit_list_dialog_title">Edit List</string>
+    <string name="hint_main">To add product to list\npress OK</string>
 
     <!--Measure Units-->
     <string name="gram">g</string>

@@ -19,6 +19,9 @@
     <string name="sort_products_cont_desc">Отсортировать список</string>
     <string name="remove_item_cont_desc">Удалить элемент</string>
     <string name="best_price_cont_desc">Лучшая цена</string>
+    <string name="create_list_dialog_title">Создать список</string>
+    <string name="edit_list_dialog_title">Изменить список</string>
+    <string name="hint_main">Для добавления товара в список\nнажмите ОК</string>
     <string name="gram">г</string>
     <string name="kilogram">кг</string>
     <string name="liter">Л</string>
