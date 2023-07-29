@@ -22,10 +22,12 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 const val TAG = "myTag"
@@ -58,7 +60,7 @@ class MainScreenViewModel(
         getProductsForListByListIdUseCase.execute(listModel.id, isSortByPrice)
     }.flatMapLatest {
         it
-    }
+    }.stateIn(scope = viewModelScope, started = SharingStarted.Lazily, initialValue = emptyList())
 
     val scrollTo = MutableSharedFlow<ScrollPosition>()
 

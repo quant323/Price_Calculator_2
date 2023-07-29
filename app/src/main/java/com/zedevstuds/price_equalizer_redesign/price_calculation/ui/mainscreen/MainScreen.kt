@@ -40,7 +40,7 @@ fun MainScreen(
     isDarkMode: Boolean = false,
     onThemeUpdated: (Boolean) -> Unit = {}
 ) {
-    val productList = mainViewModel.productList.collectAsState(emptyList())
+    val productList = mainViewModel.productList.collectAsState()
     val coroutineScope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     var showCurrencyDialog by remember { mutableStateOf(false) }
@@ -98,7 +98,7 @@ fun MainScreen(
                 )
             ) {
                 MainScreenContent(
-                    productList = productList.value,
+                    productList = productList,
                     currency = mainViewModel.getCurrency().sign,
                     scrollToFlow = mainViewModel.scrollTo,
                     modifier = Modifier.weight(1f),

@@ -12,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,7 +33,7 @@ import kotlinx.coroutines.flow.flow
 
 @Composable
 fun MainScreenContent(
-    productList: List<ProductModel>,
+    productList: State<List<ProductModel>>,
     currency: String,
     scrollToFlow: Flow<MainScreenViewModel.ScrollPosition>,
     modifier: Modifier = Modifier,
@@ -50,10 +51,10 @@ fun MainScreenContent(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 state = scrollState
             ) {
-                itemsIndexed(productList) {index, product ->
+                itemsIndexed(productList.value) {index, product ->
                     ProductListItem(
                         product = product,
-                        bestPriceProduct = getBestPriceProduct(productList),
+                        bestPriceProduct = getBestPriceProduct(productList.value),
                         currency = currency,
                         index = index + 1,
                         modifier = Modifier.fillMaxWidth(),
@@ -66,7 +67,7 @@ fun MainScreenContent(
                     )
                 }
             }
-            if (productList.isEmpty()) {
+            if (productList.value.isEmpty()) {
                 Text(
                     text = stringResource(R.string.hint_main),
                     style = MaterialTheme.typography.titleLarge,
@@ -89,10 +90,10 @@ fun MainScreenContent(
 
     LaunchedEffect(Unit) {
         scrollToFlow.collect {
-            if (productList.isEmpty()) return@collect
+            if (productList.value.isEmpty()) return@collect
             val itemIndex = when (it) {
                 MainScreenViewModel.ScrollPosition.FIRST -> 0
-                MainScreenViewModel.ScrollPosition.LAST -> productList.lastIndex
+                MainScreenViewModel.ScrollPosition.LAST -> productList.value.lastIndex
             }
             scrollState.scrollToItem(itemIndex)
         }
@@ -109,7 +110,7 @@ private fun getBestPriceProduct(productList: List<ProductModel>): ProductModel? 
 @Composable
 fun MainScreenContentPreview() {
     MainScreenContent(
-        productList = productModels,
+        productList = remember { mutableStateOf(productModels) },
         currency = "$",
         scrollToFlow = flow {  },
         onDeleteProduct = {},

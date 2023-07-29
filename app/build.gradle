@@ -81,8 +81,11 @@ dependencies {
     // ViewModel in Compose
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1"
 
+    // Compose additional icons
+    implementation 'androidx.compose.material:material-icons-extended'
+
     // Coroutines
-    ext.coroutines_version = '1.7.2'
+    ext.coroutines_version = '1.7.3'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
 
