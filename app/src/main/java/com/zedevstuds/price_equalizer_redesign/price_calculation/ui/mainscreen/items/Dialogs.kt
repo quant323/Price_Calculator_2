@@ -1,12 +1,13 @@
 package com.zedevstuds.price_equalizer_redesign.price_calculation.ui.mainscreen.items
 
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -17,28 +18,26 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
 import com.zedevstuds.price_equalizer_redesign.R
 import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.models.ListModel
 import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.enterparams.CurrencyUi
-import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.mainscreen.MainScreenViewModel
 
 @Composable
-fun EditProductTitleDialog(
+fun ProductTitleDialog(
     currentTitle: String,
     onConfirm: (title: String) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    var title by remember { mutableStateOf(currentTitle) }
+    var productName by remember { mutableStateOf(currentTitle) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
             Button(
-                onClick = { onConfirm(title) }
+                onClick = { onConfirm(productName) }
             ) {
                 Text(text = stringResource(R.string.ok_dialog_button_title))
             }
@@ -49,17 +48,87 @@ fun EditProductTitleDialog(
             }
         },
         title = {
-            BasicTextField(
-                value = title,
-                textStyle = LocalTextStyle.current.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
-                cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
-                singleLine = true,
+            CleanableTextField(
+                title = productName,
                 onValueChange = {
-                    if (it.length <= MainScreenViewModel.MAX_TITLE_LENGTH) {
-                        title = it
-                    }
+                    productName = it
+                },
+                onClear = { productName = "" }
+            )
+        }
+    )
+}
+
+@Composable
+fun ListTitleDialog(
+    initialListName: String,
+    listsOfProducts: List<ListModel>,
+    onConfirm: (title: String) -> Unit,
+    onDismiss: () -> Unit,
+) {
+
+    fun String.isNewTitle(): Boolean = listsOfProducts.none { it.name == this.trim() }
+
+    var listName by remember { mutableStateOf(initialListName) }
+    var isConfirmEnabled by remember {
+        mutableStateOf(
+            initialListName.isNewTitle()
+        )
+    }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            Button(
+                onClick = { onConfirm(listName) },
+                enabled = isConfirmEnabled,
+            ) {
+                Text(text = stringResource(R.string.ok_dialog_button_title))
+            }
+        },
+        dismissButton = {
+            Button(onClick = onDismiss) {
+                Text(text = stringResource(R.string.cancel_dialog_button_title))
+            }
+        },
+        title = {
+            CleanableTextField(
+                title = listName,
+                onValueChange = {
+                    listName = it
+                    isConfirmEnabled = it.isNotEmpty() && it.isNewTitle()
+                },
+                onClear = {
+                    listName = ""
+                    isConfirmEnabled = false
                 }
             )
+        }
+    )
+}
+
+@Composable
+fun DeleteListDialog(
+    listTitle: String,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit = {},
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            Button(
+                onClick = { onConfirm() }
+            ) {
+                Text(text = stringResource(R.string.delete_dialog_button_title))
+            }
+        },
+        dismissButton = {
+            Button(onClick = onDismiss) {
+                Text(text = stringResource(R.string.cancel_dialog_button_title))
+            }
+        },
+        title = {
+            Text(text = stringResource(R.string.delete_dialog_text, listTitle))
         }
     )
 }
@@ -96,6 +165,31 @@ fun SelectCurrencyDialog(
                 }
             )
         }
+    )
+}
+
+@Composable
+fun CleanableTextField(
+    title: String,
+    onValueChange: (String) -> Unit,
+    onClear: () -> Unit
+) {
+    TextField(
+        value = title,
+        label = {
+            Text(stringResource(R.string.edit_product_title_dialog_hint))
+        },
+        textStyle = LocalTextStyle.current.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
+        singleLine = true,
+        trailingIcon = {
+            IconButton(onClick = onClear) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_clear_24),
+                    contentDescription = stringResource(R.string.edit_list_cont_desc)
+                )
+            }
+        },
+        onValueChange = onValueChange
     )
 }
 
@@ -143,92 +237,10 @@ fun SelectCurrencyDropDown(
 
 private fun getCurrencyText(currency: CurrencyUi) = "${currency.name} (${currency.sign})"
 
-@Composable
-fun AddListDialog(
-    title: String,
-    initialListName: String,
-    listsOfProducts: List<ListModel>,
-    onConfirm: (title: String) -> Unit,
-    onDismiss: () -> Unit,
-) {
-
-    fun String.isNewTitle(): Boolean = listsOfProducts.none { it.name == this.trim() }
-
-    var listName by remember { mutableStateOf(initialListName) }
-    var isConfirmEnabled by remember {
-        mutableStateOf(
-            initialListName.isNewTitle()
-        )
-    }
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        confirmButton = {
-            Button(
-                onClick = { onConfirm(listName) },
-                enabled = isConfirmEnabled,
-            ) {
-                Text(text = stringResource(R.string.ok_dialog_button_title))
-            }
-        },
-        dismissButton = {
-            Button(onClick = onDismiss) {
-                Text(text = stringResource(R.string.cancel_dialog_button_title))
-            }
-        },
-        title = {
-            Text(text = title)
-        },
-        text = {
-            BasicTextField(
-                value = listName,
-                textStyle = LocalTextStyle.current.copy(
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontSize = 24.sp
-                ),
-                cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
-                singleLine = true,
-                onValueChange = {
-                    if (it.length <= MainScreenViewModel.MAX_TITLE_LENGTH) {
-                        listName = it
-                        isConfirmEnabled = it.isNewTitle()
-                    }
-                }
-            )
-        }
-    )
-}
-
-@Composable
-fun DeleteListDialog(
-    listTitle: String,
-    onConfirm: () -> Unit,
-    onDismiss: () -> Unit = {},
-) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        confirmButton = {
-            Button(
-                onClick = { onConfirm() }
-            ) {
-                Text(text = stringResource(R.string.delete_dialog_button_title))
-            }
-        },
-        dismissButton = {
-            Button(onClick = onDismiss) {
-                Text(text = stringResource(R.string.cancel_dialog_button_title))
-            }
-        },
-        title = {
-            Text(text = stringResource(R.string.delete_dialog_text, listTitle))
-        }
-    )
-}
-
 @Preview
 @Composable
 fun EditTitleDialogPreview() {
-    EditProductTitleDialog(
+    ProductTitleDialog(
         currentTitle = "Product 1",
         onConfirm = {},
         onDismiss = {}
@@ -249,8 +261,7 @@ fun SelectCurrencyDialogPreview() {
 @Preview
 @Composable
 fun ListTitleDialogPreview() {
-    AddListDialog(
-        title = "Create List",
+    ListTitleDialog(
         initialListName = "List 1",
         listsOfProducts = emptyList(),
         onConfirm = {},

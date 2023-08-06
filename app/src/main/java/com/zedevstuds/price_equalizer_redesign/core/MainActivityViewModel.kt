@@ -1,4 +1,4 @@
-package com.zedevstuds.price_equalizer_redesign.core.ui
+package com.zedevstuds.price_equalizer_redesign.core
 
 import androidx.lifecycle.ViewModel
 import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.repositories.PreferenceRepository

@@ -25,6 +25,8 @@
     <string name="create_list_dialog_title">Create List</string>
     <string name="edit_list_dialog_title">Edit List</string>
     <string name="hint_main">To add product to list\npress OK</string>
+    <string name="edit_product_title_dialog_hint">Product Name</string>
+    <string name="edit_list_title_dialog_hint">List Name</string>
 
     <!--Measure Units-->
     <string name="gram">g</string>

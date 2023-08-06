@@ -26,7 +26,7 @@ import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.models.L
 import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.drawer.NavigationDrawer
 import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.enterparams.CurrencyUi
 import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.enterparams.EnterParamsArea
-import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.mainscreen.items.AddListDialog
+import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.mainscreen.items.ListTitleDialog
 import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.mainscreen.items.CalcAppBar
 import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.mainscreen.items.DeleteListDialog
 import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.mainscreen.items.SelectCurrencyDialog
@@ -121,8 +121,7 @@ fun MainScreen(
                 )
             }
             if (showAddListDialog) {
-                AddListDialog(
-                    title = stringResource(R.string.create_list_dialog_title),
+                ListTitleDialog(
                     initialListName = stringResource(R.string.dialog_default_list_title),
                     listsOfProducts = allLists.value,
                     onConfirm = { title ->
@@ -144,8 +143,7 @@ fun MainScreen(
                 )
             }
             listToChangeName?.let { listModel ->
-                AddListDialog(
-                    title = stringResource(R.string.edit_list_dialog_title),
+                ListTitleDialog(
                     initialListName = listModel.name,
                     listsOfProducts = allLists.value,
                     onConfirm = { title ->

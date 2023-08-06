@@ -6,7 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.zedevstuds.price_equalizer_redesign.BuildConfig
 import com.zedevstuds.price_equalizer_redesign.R
 import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.models.ListModel
+import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.models.MeasureUnit
 import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.models.ProductModel
+import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.repositories.PreferenceRepository
 import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.usecases.list.AddListUseCase
 import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.usecases.list.DeleteListUseCase
 import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.usecases.list.GetAllListsUseCase
@@ -23,10 +25,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -44,16 +44,20 @@ class MainScreenViewModel(
     private val deleteListUseCase: DeleteListUseCase,
     private val updateListUseCase: UpdateListUseCase,
     private val getAllListsUseCase: GetAllListsUseCase,
+    private val preferenceRepository: PreferenceRepository,
     context: Context,
 ) : ViewModel() {
 
     private val defaultList = ListModel(
         id = DEFAULT_LIST_ID,
-        name = context.getString(R.string.default_list_title)
+        name = context.getString(R.string.default_list_title),
+        measureUnit = DEFAULT_MEASURE_UNIT
     )
     val selectedProductList = MutableStateFlow(defaultList)
     val allLists = MutableStateFlow(emptyList<ListModel>())
-    val isSortApplied = MutableStateFlow(false)
+    val isSortApplied = MutableStateFlow(
+        preferenceRepository.getIsSorted(false)
+    )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val productList = selectedProductList.combine(isSortApplied) { listModel, isSortByPrice ->
@@ -63,7 +67,6 @@ class MainScreenViewModel(
     }.stateIn(scope = viewModelScope, started = SharingStarted.Lazily, initialValue = emptyList())
 
     val scrollTo = MutableSharedFlow<ScrollPosition>()
-
 
     init {
         getProductLists()
@@ -86,12 +89,19 @@ class MainScreenViewModel(
         viewModelScope.launch {
             isSortApplied.value = !isSortApplied.value
             scrollToItem(ScrollPosition.FIRST)
+            preferenceRepository.saveIsSorted(isSortApplied.value)
         }
     }
 
     fun addProductList(listName: String) {
         viewModelScope.launch {
-            addListUseCase.execute(listName)
+            addListUseCase.execute(
+                ListModel(
+                    id = AUTOGENERATE_ID,
+                    name = listName,
+                    measureUnit = DEFAULT_MEASURE_UNIT
+                )
+            )
         }
     }
 
@@ -119,18 +129,23 @@ class MainScreenViewModel(
 
     fun onListClicked(listModel: ListModel) {
         selectedProductList.value = listModel
+        enterParamsViewModel.setMeasureUnit(listModel.measureUnit)
     }
 
     private fun getProductLists() {
         viewModelScope.launch {
-            getAllListsUseCase.execute().map {
-                (listOf(defaultList) + it).also { totalList ->
+            getAllListsUseCase.execute().collect { list ->
+                if (list.isNotEmpty()) {
                     selectedProductList.value =
-                        getSelectedItem(newList = totalList, oldList = allLists.value)
-                    allLists.value = totalList
+                        getSelectedItem(newList = list, oldList = allLists.value)
+                    enterParamsViewModel.setMeasureUnit(
+                        selectedProductList.value.measureUnit
+                    )
+                    allLists.value = list
+                } else {
+                    addListUseCase.execute(defaultList)
                 }
             }
-                .collect()
         }
     }
 
@@ -155,6 +170,11 @@ class MainScreenViewModel(
                     is EnterParamsViewModel.EnterParamsEvent.CleanListEvent -> {
                         deleteProductsInListUseCase.execute(selectedProductList.value.id)
                     }
+                    is EnterParamsViewModel.EnterParamsEvent.MeasureUnitSelectedEvent -> {
+                        updateListUseCase.execute(
+                            selectedProductList.value.copy(measureUnit = event.unit)
+                        )
+                    }
                 }
             }
         }
@@ -169,8 +189,8 @@ class MainScreenViewModel(
     }
 
     companion object {
-        const val MAX_TITLE_LENGTH = 12
         const val DEFAULT_LIST_ID = -1
+        val DEFAULT_MEASURE_UNIT = MeasureUnit.KG
         private const val DELAY_BEFORE_SCROLL = 200L
     }
 }

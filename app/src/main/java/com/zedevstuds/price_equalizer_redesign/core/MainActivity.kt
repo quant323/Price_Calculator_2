@@ -3,18 +3,14 @@ package com.zedevstuds.price_equalizer_redesign.core
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
-import com.zedevstuds.price_equalizer_redesign.core.ui.MainActivityViewModel
+import androidx.compose.ui.unit.dp
 import com.zedevstuds.price_equalizer_redesign.core.ui.theme.PriceCalculatorTheme
 import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.mainscreen.MainScreen
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -30,17 +26,7 @@ class MainActivity : ComponentActivity() {
 
             PriceCalculatorTheme(darkTheme = darkTheme.value) {
                 Surface(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            brush = Brush.verticalGradient(
-                                colors = listOf(
-                                    MaterialTheme.colorScheme.background,
-                                    MaterialTheme.colorScheme.primary
-                                )
-                            )
-                        ),
-//                    color = MaterialTheme.colorScheme.background,
+                    tonalElevation = 5.dp
                 ) {
                     MainScreen(
                         isDarkMode = darkTheme.value,

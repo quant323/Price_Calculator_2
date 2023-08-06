@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import com.zedevstuds.price_equalizer_redesign.R
 import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.models.MeasureUnit
 import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.models.ProductModel
-import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.mainscreen.items.EditProductTitleDialog
+import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.mainscreen.items.ProductTitleDialog
 import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.mainscreen.items.ProductListItem
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -77,7 +77,7 @@ fun MainScreenContent(
             }
         }
         productToEdit?.let { product ->
-            EditProductTitleDialog(
+            ProductTitleDialog(
                 currentTitle = product.title,
                 onConfirm = {
                     onUpdateProductTitle(product.copy(title = it))
