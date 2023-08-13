@@ -50,6 +50,7 @@ fun ProductTitleDialog(
         title = {
             CleanableTextField(
                 title = productName,
+                hint = stringResource(R.string.edit_product_title_dialog_hint),
                 onValueChange = {
                     productName = it
                 },
@@ -94,6 +95,7 @@ fun ListTitleDialog(
         title = {
             CleanableTextField(
                 title = listName,
+                hint = stringResource(R.string.edit_list_title_dialog_hint),
                 onValueChange = {
                     listName = it
                     isConfirmEnabled = it.isNotEmpty() && it.isNewTitle()
@@ -171,13 +173,14 @@ fun SelectCurrencyDialog(
 @Composable
 fun CleanableTextField(
     title: String,
+    hint: String,
     onValueChange: (String) -> Unit,
     onClear: () -> Unit
 ) {
     TextField(
         value = title,
         label = {
-            Text(stringResource(R.string.edit_product_title_dialog_hint))
+            Text(hint)
         },
         textStyle = LocalTextStyle.current.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
         singleLine = true,
