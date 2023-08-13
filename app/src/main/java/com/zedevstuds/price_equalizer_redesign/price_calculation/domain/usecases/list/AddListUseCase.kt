@@ -2,12 +2,18 @@ package com.zedevstuds.price_equalizer_redesign.price_calculation.domain.usecase
 
 import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.models.ListModel
 import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.repositories.ProductListRepository
+import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.mainscreen.AUTOGENERATE_ID
 
 class AddListUseCase(
     private val productListRepository: ProductListRepository
 ) {
 
-    suspend fun execute(productList: ListModel) {
-        productListRepository.addList(productList)
+    suspend fun execute(listName: String) {
+        productListRepository.addList(
+            ListModel(
+                id = AUTOGENERATE_ID,
+                name = listName
+            )
+        )
     }
 }

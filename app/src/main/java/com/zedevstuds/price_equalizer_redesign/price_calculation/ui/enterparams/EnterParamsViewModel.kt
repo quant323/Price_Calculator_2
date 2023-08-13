@@ -13,7 +13,6 @@ import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.models.l
 import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.repositories.PreferenceRepository
 import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.usecases.product.GetPriceForOneUnitUseCase
 import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.mainscreen.AUTOGENERATE_ID
-import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.mainscreen.MainScreenViewModel
 import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.mainscreen.TAG
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -37,16 +36,11 @@ class EnterParamsViewModel(
     private var numberOfCreatedProducts = 0
 
     fun onMeasureUnitSelected(unit: MeasureUnit) {
-        scope.launch {
-            events.emit(EnterParamsEvent.MeasureUnitSelectedEvent(unit))
-        }
-    }
-
-    fun setMeasureUnit(unit: MeasureUnit) {
         _enterParamsViewState.value = enterParamsViewState.value.copy(
             selectedUnit = unit,
             mainUnit = unit.getMainUnit()
         )
+        preferenceRepository.saveMeasureUnitId(enterParamsViewState.value.selectedUnit.id)
     }
 
     fun onAmountChanged(newAmount: String) {
@@ -137,7 +131,7 @@ class EnterParamsViewModel(
     }
 
     private fun getInitialState(): EnterParamsViewState {
-        val measureUnit = MainScreenViewModel.DEFAULT_MEASURE_UNIT
+        val measureUnit = getMeasureUnit()
         return EnterParamsViewState(
             enteredAmount = INITIAL_VALUE,
             enteredPrice = INITIAL_VALUE,
@@ -159,6 +153,12 @@ class EnterParamsViewModel(
             priceForCustomAmount = INITIAL_CUSTOM_PRICE,
             title = getDefaultTitle(),
         )
+    }
+
+    private fun getMeasureUnit(): MeasureUnit {
+        val defaultUnit = MeasureUnit.KG
+        val id = preferenceRepository.getMeasureUnitId(defaultUnit.id)
+        return listOfUnits.firstOrNull{ it.id == id } ?: defaultUnit
     }
 
     private fun getCurrency(): CurrencyUi {
@@ -198,7 +198,6 @@ class EnterParamsViewModel(
     sealed class EnterParamsEvent {
         class AddProductEvent(val product: ProductModel) : EnterParamsEvent()
         object CleanListEvent : EnterParamsEvent()
-        class MeasureUnitSelectedEvent(val unit: MeasureUnit) : EnterParamsEvent()
     }
 
     companion object {

@@ -1,6 +1,6 @@
 package com.zedevstuds.price_equalizer_redesign.price_calculation.ui.di
 
-import com.zedevstuds.price_equalizer_redesign.core.MainActivityViewModel
+import com.zedevstuds.price_equalizer_redesign.core.ui.MainActivityViewModel
 import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.enterparams.EnterParamsViewModel
 import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.mainscreen.MainScreenViewModel
 import org.koin.android.ext.koin.androidContext
@@ -27,7 +27,6 @@ val viewModelsModule = module {
             addListUseCase = get(),
             updateListUseCase = get(),
             getAllListsUseCase = get(),
-            preferenceRepository = get(),
             context = androidContext(),
         )
     }

@@ -1,6 +1,5 @@
 package com.zedevstuds.price_equalizer_redesign.price_calculation.ui.mainscreen.items
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -53,7 +52,6 @@ fun ProductListItem(
                 color = MaterialTheme.colorScheme.primary,
                 shape = RoundedCornerShape(4.dp)
             )
-            .background(MaterialTheme.colorScheme.background)
             .padding(8.dp)
     ) {
         Row {

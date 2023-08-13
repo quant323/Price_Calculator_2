@@ -1,32 +1,27 @@
 package com.zedevstuds.price_equalizer_redesign.price_calculation.ui.enterparams
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.InputChip
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,34 +29,33 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.zedevstuds.price_equalizer_redesign.R
 import com.zedevstuds.price_equalizer_redesign.core.ui.theme.PriceCalculatorTheme
 import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.models.MeasureUnit
 import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.models.listOfUnits
-import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.mainscreen.items.ProductTitleDialog
+import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.mainscreen.MainScreenViewModel
 
 @Composable
 fun EnterParamsArea(
     viewModel: EnterParamsViewModel,
     modifier: Modifier = Modifier,
 ) {
-    var showEditTitleDialog by remember { mutableStateOf(false) }
-
     EnterParamsAreaContent(
         viewState = viewModel.enterParamsViewState.value,
-        onTitleClicked = {
-            showEditTitleDialog = true
+        onTitleChanged = {
+            if (it.length <= MainScreenViewModel.MAX_TITLE_LENGTH) {
+                viewModel.onTitleChanged(it)
+            }
         },
         onAmountChanged = {
             viewModel.onAmountChanged(it)
@@ -80,23 +74,12 @@ fun EnterParamsArea(
         },
         modifier = modifier
     )
-
-    if (showEditTitleDialog) {
-        ProductTitleDialog(
-            currentTitle = viewModel.enterParamsViewState.value.title,
-            onConfirm = {
-                viewModel.onTitleChanged(it)
-                showEditTitleDialog = false
-            },
-            onDismiss = { showEditTitleDialog = false }
-        )
-    }
 }
 
 @Composable
 fun EnterParamsAreaContent(
     viewState: EnterParamsViewModel.EnterParamsViewState,
-    onTitleClicked: () -> Unit,
+    onTitleChanged: (String) -> Unit,
     onAmountChanged: (String) -> Unit,
     onPriceChanged: (String) -> Unit,
     onOkClicked: () -> Unit,
@@ -108,14 +91,13 @@ fun EnterParamsAreaContent(
     val focusRequester = remember { FocusRequester() }
 
     Column(modifier = modifier) {
-        Spacer(modifier = Modifier.height(6.dp))
         EnterChipsSection(
             title = viewState.title,
             isHidden = isHidden,
             selectedUnit = viewState.selectedUnit,
             unitList = viewState.listOfUnits,
-            onTitleClicked = onTitleClicked,
-            onOkClicked = {
+            onTitleChanged = onTitleChanged,
+            onOk = {
                 onOkClicked()
                 if (!isHidden) {
                     focusRequester.requestFocus()
@@ -126,7 +108,6 @@ fun EnterParamsAreaContent(
             onUnitSelected = onUnitSelected
         )
         if (!isHidden) {
-            Spacer(modifier = Modifier.height(6.dp))
             Row {
                 EnterField(
                     text = viewState.customAmount,
@@ -135,14 +116,13 @@ fun EnterParamsAreaContent(
                     trailingText = stringResource(id = viewState.mainUnit.toStringResId()),
                     readOnly = true,
                 )
-                VerticalSpacer()
+                HorizontalSpacer()
                 EnterField(
                     text = viewState.priceForCustomAmount,
                     hint = stringResource(R.string.calc_price_hint),
                     modifier = Modifier.weight(1f),
                     trailingText = viewState.currency.sign,
                     readOnly = true,
-                    leadingIcon = { Text(text = "=") }
                 )
             }
             Row {
@@ -159,13 +139,12 @@ fun EnterParamsAreaContent(
                         focusRequester.requestFocus()
                     }
                 )
-                VerticalSpacer()
+                HorizontalSpacer()
                 EnterField(
                     text = viewState.enteredPrice,
                     hint = stringResource(R.string.price_hint),
                     onTextChanged = onPriceChanged,
                     modifier = Modifier.weight(1.0f),
-                    leadingIcon = { Text(text = "=") },
                     trailingText = viewState.currency.sign,
                     onDone = {
                         onOkClicked()
@@ -180,14 +159,15 @@ fun EnterParamsAreaContent(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EnterChipsSection(
     title: String,
     isHidden: Boolean,
     selectedUnit: MeasureUnit,
     unitList: List<MeasureUnit>,
-    onTitleClicked: () -> Unit,
-    onOkClicked: () -> Unit,
+    onTitleChanged: (String) -> Unit,
+    onOk: () -> Unit,
     onClear: () -> Unit,
     onHide: () -> Unit,
     onUnitSelected: (MeasureUnit) -> Unit
@@ -195,12 +175,10 @@ fun EnterChipsSection(
     var isUnitsVisible by remember { mutableStateOf(false) }
 
     if (isUnitsVisible) {
-        LazyRow(
-            horizontalArrangement = Arrangement.SpaceAround,
-            modifier = Modifier.fillMaxWidth()
-        ) {
+        // TODO issue with paddings
+        LazyRow {
             items(unitList) {
-                CustomChip(
+                InputChip(
                     selected = selectedUnit == it,
                     onClick = {
                         onUnitSelected(it)
@@ -215,11 +193,12 @@ fun EnterChipsSection(
                 )
             }
         }
-        Spacer(modifier = Modifier.height(10.dp))
     }
     Row {
         Row(modifier = Modifier.weight(1f)) {
-            CustomChip(
+            InputChip(
+                selected = false,
+                modifier = Modifier.padding(end = 4.dp),
                 onClick = { isUnitsVisible = !isUnitsVisible },
                 label = {
                     Text(
@@ -228,52 +207,52 @@ fun EnterChipsSection(
                     )
                 }
             )
-            VerticalSpacer()
-            CustomChip(
-                onClick = onTitleClicked,
+            InputChip(
+                selected = false,
+                onClick = {},
                 modifier = Modifier.fillMaxWidth(),
                 label = {
-                    Text(
-                        text = title,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                    BasicTextField(
+                        value = title,
+                        textStyle = MaterialTheme.typography.titleMedium.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
+                        cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+                        singleLine = true,
+                        onValueChange = onTitleChanged,
                     )
                 }
             )
         }
-        VerticalSpacer()
+        HorizontalSpacer()
         Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.weight(1f)) {
-            CustomChip(
+            InputChip(
+                selected = false,
                 onClick = onClear,
                 label = {
                     Icon(
                         imageVector = Icons.Outlined.Delete,
                         contentDescription = stringResource(R.string.clear_list_cont_desc)
                     )
-                },
-                modifier = Modifier.weight(1f)
+                }
             )
-            VerticalSpacer()
-            CustomChip(
+            InputChip(
+                selected = false,
                 onClick = onHide,
                 label = {
                     Icon(
                         imageVector = if (isHidden) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
                         contentDescription = stringResource(R.string.hide_params_cont_desc)
                     )
-                },
-                modifier = Modifier.weight(1f)
+                }
             )
-            VerticalSpacer()
-            CustomChip(
-                onClick = onOkClicked,
+            InputChip(
+                selected = false,
+                onClick = onOk,
                 label = {
                     Text(
                         text = stringResource(R.string.ok_dialog_button_title),
                         style = MaterialTheme.typography.titleMedium
                     )
-                },
-                modifier = Modifier.weight(1f)
+                }
             )
         }
     }
@@ -285,9 +264,8 @@ fun EnterField(
     hint: String,
     trailingText: String,
     modifier: Modifier = Modifier,
-    leadingIcon: @Composable (() -> Unit)? = null,
-    readOnly: Boolean = false,
     onTextChanged: (String) -> Unit = {},
+    readOnly: Boolean = false,
     onDone: () -> Unit = {}
 ) {
     OutlinedTextField(
@@ -301,50 +279,16 @@ fun EnterField(
             imeAction = ImeAction.Done
         ),
         trailingIcon = { Text(text = trailingText) },
-        leadingIcon = leadingIcon,
         textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.End),
         readOnly = readOnly,
         keyboardActions = KeyboardActions(
             onDone = { onDone() }
-        ),
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedContainerColor = MaterialTheme.colorScheme.background,
-            unfocusedContainerColor = MaterialTheme.colorScheme.background
         )
     )
 }
 
 @Composable
-fun CustomChip(
-    label: @Composable () -> Unit,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    selected: Boolean = false,
-) {
-    val containerSize = 36.dp
-    Box(
-        modifier = modifier
-            .border(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.outline,
-                shape = RoundedCornerShape(8.dp)
-            )
-            .background(
-                color = if (selected) MaterialTheme.colorScheme.secondaryContainer
-                else MaterialTheme.colorScheme.background,
-                shape = RoundedCornerShape(8.dp)
-            )
-            .sizeIn(minWidth = containerSize, minHeight = containerSize)
-            .padding(horizontal = 8.dp, vertical = 6.dp)
-            .clickable(onClick = onClick),
-        contentAlignment = Alignment.Center
-    ) {
-        label()
-    }
-}
-
-@Composable
-fun VerticalSpacer() {
+fun HorizontalSpacer() {
     Spacer(modifier = Modifier.width(8.dp))
 }
 
