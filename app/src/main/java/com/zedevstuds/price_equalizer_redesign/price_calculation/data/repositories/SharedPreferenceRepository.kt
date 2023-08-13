@@ -7,14 +7,6 @@ class SharedPreferenceRepository(
     private val preferences: SharedPreferences
 ) : PreferenceRepository {
 
-    override fun getMeasureUnitId(default: Int): Int {
-        return preferences.getInt(MEASURE_UNIT, default)
-    }
-
-    override fun saveMeasureUnitId(unitId: Int) {
-        preferences.edit().putInt(MEASURE_UNIT, unitId).apply()
-    }
-
     override fun getCurrencyName(default: String): String {
         return preferences.getString(CURRENCY, default) ?: default
     }
@@ -31,9 +23,17 @@ class SharedPreferenceRepository(
         preferences.edit().putBoolean(DARK_MODE, isDarkMode).apply()
     }
 
+    override fun getIsSorted(default: Boolean): Boolean {
+        return preferences.getBoolean(IS_SORTED, default)
+    }
+
+    override fun saveIsSorted(isSorted: Boolean) {
+        preferences.edit().putBoolean(IS_SORTED, isSorted).apply()
+    }
+
     companion object {
-        private const val MEASURE_UNIT = "measure_unit"
         private const val CURRENCY = "currency"
         private const val DARK_MODE = "dark_mode"
+        private const val IS_SORTED = "is_sorted"
     }
 }

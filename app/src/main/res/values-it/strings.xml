@@ -21,6 +21,7 @@
     <string name="best_price_cont_desc">Miglior prezzo</string>
     <string name="create_list_dialog_title">Crea lista</string>
     <string name="edit_list_dialog_title">Modifica elenco</string>
+    <string name="edit_product_title_dialog_hint">Nome del prodotto</string>
     <string name="gram">g</string>
     <string name="kilogram">kg</string>
     <string name="liter">L</string>
@@ -35,4 +36,5 @@
     <string name="dialog_default_list_title">Elenco</string>
     <string name="edit_list_cont_desc">Modifica nome elenco</string>
     <string name="hint_main">Per aggiungere un prodotto all\'elenco\npremere OK</string>
+    <string name="edit_list_title_dialog_hint">Lista nome</string>
 </resources>
