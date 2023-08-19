@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -25,25 +25,25 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.zedevstuds.price_equalizer_redesign.R
 import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.models.MeasureUnit
-import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.models.ProductModel
-import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.mainscreen.items.ProductTitleDialog
 import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.mainscreen.items.ProductListItem
+import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.mainscreen.items.ProductTitleDialog
+import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.models.ProductUiModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 @Composable
 fun MainScreenContent(
-    productList: State<List<ProductModel>>,
+    productList: State<List<ProductUiModel>>,
     currency: String,
     scrollToFlow: Flow<MainScreenViewModel.ScrollPosition>,
     modifier: Modifier = Modifier,
-    onDeleteProduct: (ProductModel) -> Unit,
-    onUpdateProductTitle: (ProductModel) -> Unit,
+    onDeleteProduct: (ProductUiModel) -> Unit,
+    onUpdateProductTitle: (ProductUiModel) -> Unit,
 ) {
     val scrollState = rememberLazyListState()
 
     Column(modifier = modifier) {
-        var productToEdit by remember { mutableStateOf<ProductModel?>(null) }
+        var productToEdit by remember { mutableStateOf<ProductUiModel?>(null) }
 
         Box(modifier = Modifier.fillMaxSize()) {
             LazyColumn(
@@ -51,12 +51,11 @@ fun MainScreenContent(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 state = scrollState
             ) {
-                itemsIndexed(productList.value) {index, product ->
+                items(productList.value) {product ->
                     ProductListItem(
                         product = product,
                         bestPriceProduct = getBestPriceProduct(productList.value),
                         currency = currency,
-                        index = index + 1,
                         modifier = Modifier.fillMaxWidth(),
                         onEditClicked = {
                             productToEdit = product
@@ -100,7 +99,7 @@ fun MainScreenContent(
     }
 }
 
-private fun getBestPriceProduct(productList: List<ProductModel>): ProductModel? {
+private fun getBestPriceProduct(productList: List<ProductUiModel>): ProductUiModel? {
     return if (productList.size > 1) {
         productList.minByOrNull { it.priceForOneUnit }
     } else null
@@ -119,8 +118,9 @@ fun MainScreenContentPreview() {
 }
 
 private val productModel =
-    ProductModel(
+    ProductUiModel(
         id = 1,
+        index = 1,
         enteredAmount = "5",
         enteredPrice = "7",
         selectedMeasureUnit = MeasureUnit.KG,

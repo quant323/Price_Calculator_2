@@ -3,20 +3,12 @@ package com.zedevstuds.price_equalizer_redesign.price_calculation.domain.usecase
 import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.models.ProductModel
 import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.repositories.ProductRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 
 class GetProductsForListByListIdUseCase(
     private val productRepository: ProductRepository
 ) {
 
-    fun execute(listId: Int, isSortByPrice: Boolean): Flow<List<ProductModel>> {
-        return productRepository.getProductsByListId(listId)
-            .map {  productList ->
-                if (isSortByPrice) {
-                    productList.sortedBy { it.priceForOneUnit }
-                } else {
-                    productList.sortedBy { it.id }
-                }
-            }
-    }
+    fun execute(listId: Int): Flow<List<ProductModel>> =
+        productRepository.getProductsByListId(listId)
+
 }

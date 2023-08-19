@@ -2,6 +2,7 @@ package com.zedevstuds.price_equalizer_redesign.price_calculation.ui.mainscreen
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerValue
@@ -9,6 +10,7 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -16,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,6 +33,7 @@ import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.mainscreen.i
 import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.mainscreen.items.CalcAppBar
 import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.mainscreen.items.DeleteListDialog
 import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.mainscreen.items.SelectCurrencyDialog
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -40,6 +44,7 @@ fun MainScreen(
     isDarkMode: Boolean = false,
     onThemeUpdated: (Boolean) -> Unit = {}
 ) {
+    val context = LocalContext.current
     val productList = mainViewModel.productList.collectAsState()
     val coroutineScope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -152,6 +157,11 @@ fun MainScreen(
                     },
                     onDismiss = { listToChangeName = null }
                 )
+            }
+            LaunchedEffect(context) {
+                mainViewModel.messageId.collectLatest {
+                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }

@@ -1,7 +1,7 @@
 package com.zedevstuds.price_equalizer_redesign.price_calculation.ui.enterparams
 
-import android.content.Context
 import android.util.Log
+import androidx.annotation.StringRes
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.text.isDigitsOnly
@@ -25,7 +25,6 @@ import java.util.Locale
 class EnterParamsViewModel(
     private val preferenceRepository: PreferenceRepository,
     private val getPriceForOneUnitUseCase: GetPriceForOneUnitUseCase,
-    private val context: Context,
     private val scope: CoroutineScope = CoroutineScope(Job() + Dispatchers.Main)
 ) {
 
@@ -72,10 +71,13 @@ class EnterParamsViewModel(
     }
 
     fun onOkClicked() {
-        if (enterParamsViewState.value.enteredAmount.isEmpty() ||
-            enterParamsViewState.value.enteredPrice.isEmpty()) return
-        addProductToList()
-        resetInitialState()
+        val messageId = getWarningMessageId()
+        if (messageId == null) {
+            addProductToList()
+            resetInitialState()
+        } else {
+            sendMessageEvent(messageId)
+        }
     }
 
     fun onCleanClicked() {
@@ -110,6 +112,20 @@ class EnterParamsViewModel(
             events.emit(EnterParamsEvent.CleanListEvent)
         }
         resetInitialState()
+    }
+
+    private fun getWarningMessageId(): Int? {
+        return when {
+            enterParamsViewState.value.enteredAmount.isEmpty() -> R.string.message_insert_amount
+            enterParamsViewState.value.enteredPrice.isEmpty() -> R.string.message_insert_price
+            else -> null
+        }
+    }
+
+    private fun sendMessageEvent(@StringRes messageId: Int) {
+        scope.launch {
+            events.emit(EnterParamsEvent.ShowMessageEvent(messageId))
+        }
     }
 
     private fun calculatePriceForCustomAmount() {
@@ -181,7 +197,7 @@ class EnterParamsViewModel(
         }
     }
 
-    private fun getDefaultTitle() = context.getString(R.string.default_product_title)
+    private fun getDefaultTitle() = ""
 
     data class EnterParamsViewState(
         val enteredAmount: String,
@@ -199,6 +215,7 @@ class EnterParamsViewModel(
         class AddProductEvent(val product: ProductModel) : EnterParamsEvent()
         object CleanListEvent : EnterParamsEvent()
         class MeasureUnitSelectedEvent(val unit: MeasureUnit) : EnterParamsEvent()
+        class ShowMessageEvent(@StringRes val messageId: Int) : EnterParamsEvent()
     }
 
     companion object {

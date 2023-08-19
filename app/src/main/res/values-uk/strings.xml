@@ -31,10 +31,12 @@
     <string name="millimeter">мм</string>
     <string name="centimeter">см</string>
     <string name="currency_title">Валюта</string>
-    <string name="default_product_title">Продукт</string>
+    <string name="default_product_title">Название</string>
     <string name="default_list_title">Быстрый список</string>
     <string name="dialog_default_list_title">Список</string>
     <string name="edit_list_cont_desc">Редактировать название списка</string>
     <string name="hint_main">Для добавления товара в список\nнажмите ОК</string>
     <string name="edit_list_title_dialog_hint">Название списка</string>
+    <string name="message_insert_amount">Введите кол-во!</string>
+    <string name="message_insert_price">Введите кол-во!</string>
 </resources>

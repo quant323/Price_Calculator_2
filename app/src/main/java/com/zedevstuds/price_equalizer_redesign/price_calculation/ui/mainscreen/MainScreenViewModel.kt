@@ -7,7 +7,6 @@ import com.zedevstuds.price_equalizer_redesign.BuildConfig
 import com.zedevstuds.price_equalizer_redesign.R
 import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.models.ListModel
 import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.models.MeasureUnit
-import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.models.ProductModel
 import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.repositories.PreferenceRepository
 import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.usecases.list.AddListUseCase
 import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.usecases.list.DeleteListUseCase
@@ -20,6 +19,9 @@ import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.usecases
 import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.usecases.product.UpdateProductTitleUseCase
 import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.enterparams.CurrencyUi
 import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.enterparams.EnterParamsViewModel
+import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.models.ProductUiModel
+import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.models.toDomain
+import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.models.toUiModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -27,6 +29,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -58,10 +61,21 @@ class MainScreenViewModel(
     val isSortApplied = MutableStateFlow(
         preferenceRepository.getIsSorted(false)
     )
+    val messageId = MutableSharedFlow<Int>()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val productList = selectedProductList.combine(isSortApplied) { listModel, isSortByPrice ->
-        getProductsForListByListIdUseCase.execute(listModel.id, isSortByPrice)
+        getProductsForListByListIdUseCase.execute(listModel.id).map { productList ->
+            productList
+                .mapIndexed { index, product -> product.toUiModel(index.inc()) }
+                .let { uiList ->
+                    if (isSortByPrice) {
+                        uiList.sortedBy { it.priceForOneUnit }
+                    } else {
+                        uiList.sortedBy { it.id }
+                    }
+                }
+        }
     }.flatMapLatest {
         it
     }.stateIn(scope = viewModelScope, started = SharingStarted.Lazily, initialValue = emptyList())
@@ -73,9 +87,9 @@ class MainScreenViewModel(
         subscribeToEnterParamsEvents()
     }
 
-    fun onDeleteProduct(product: ProductModel) {
+    fun onDeleteProduct(product: ProductUiModel) {
         viewModelScope.launch {
-            deleteProductUseCase.execute(product, selectedProductList.value.id)
+            deleteProductUseCase.execute(product.toDomain(), selectedProductList.value.id)
         }
     }
 
@@ -119,9 +133,9 @@ class MainScreenViewModel(
         }
     }
 
-    fun updateProductTitle(updatedProduct: ProductModel) {
+    fun updateProductTitle(updatedProduct: ProductUiModel) {
         viewModelScope.launch {
-            updateProductTitleUseCase.execute(updatedProduct, selectedProductList.value.id)
+            updateProductTitleUseCase.execute(updatedProduct.toDomain(), selectedProductList.value.id)
         }
     }
 
@@ -135,7 +149,7 @@ class MainScreenViewModel(
     private fun getProductLists() {
         viewModelScope.launch {
             getAllListsUseCase.execute().collect { list ->
-                if (list.contains(defaultList)) {
+                if (list.any { it.id == DEFAULT_LIST_ID }) {
                     selectedProductList.value =
                         getSelectedItem(newList = list, oldList = allLists.value)
                     enterParamsViewModel.setMeasureUnit(
@@ -174,6 +188,9 @@ class MainScreenViewModel(
                         updateListUseCase.execute(
                             selectedProductList.value.copy(measureUnit = event.unit)
                         )
+                    }
+                    is EnterParamsViewModel.EnterParamsEvent.ShowMessageEvent -> {
+                        messageId.emit(event.messageId)
                     }
                 }
             }

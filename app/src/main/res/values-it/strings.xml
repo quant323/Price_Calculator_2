@@ -31,10 +31,12 @@
     <string name="millimeter">mm</string>
     <string name="centimeter">cm</string>
     <string name="currency_title">Valuta</string>
-    <string name="default_product_title">Prodotto</string>
+    <string name="default_product_title">Nome</string>
     <string name="default_list_title">Elenco veloce</string>
     <string name="dialog_default_list_title">Elenco</string>
     <string name="edit_list_cont_desc">Modifica nome elenco</string>
     <string name="hint_main">Per aggiungere un prodotto all\'elenco\npremere OK</string>
     <string name="edit_list_title_dialog_hint">Lista nome</string>
+    <string name="message_insert_amount">Inserisci Importo!</string>
+    <string name="message_insert_price">Inserisci il prezzo!</string>
 </resources>

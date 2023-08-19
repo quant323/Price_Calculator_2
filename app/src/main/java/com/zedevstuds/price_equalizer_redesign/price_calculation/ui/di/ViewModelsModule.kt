@@ -12,7 +12,6 @@ val viewModelsModule = module {
         EnterParamsViewModel(
             preferenceRepository = get(),
             getPriceForOneUnitUseCase = get(),
-            context = androidContext(),
         )
     }
     viewModel {

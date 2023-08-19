@@ -31,10 +31,12 @@
     <string name="millimeter">mm</string>
     <string name="centimeter">cm</string>
     <string name="currency_title">Währung</string>
-    <string name="default_product_title">Produkt</string>
+    <string name="default_product_title">Produktname</string>
     <string name="default_list_title">Schnellliste</string>
     <string name="dialog_default_list_title">Liste</string>
     <string name="edit_list_cont_desc">Listennamen bearbeiten</string>
     <string name="hint_main">Um ein Produkt zur Liste hinzuzufügen,\ndrücken Sie OK</string>
     <string name="edit_list_title_dialog_hint">Listennamen</string>
+    <string name="message_insert_amount">Betrag eingeben!</string>
+    <string name="message_insert_price">Preis einfügen!</string>
 </resources>

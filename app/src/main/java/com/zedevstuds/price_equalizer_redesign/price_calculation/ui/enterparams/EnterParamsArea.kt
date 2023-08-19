@@ -21,6 +21,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.KeyboardDoubleArrowRight
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
@@ -127,7 +128,7 @@ fun EnterParamsAreaContent(
         )
         if (!isHidden) {
             Spacer(modifier = Modifier.height(6.dp))
-            Row {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 EnterField(
                     text = viewState.customAmount,
                     hint = stringResource(R.string.calc_amount_hint),
@@ -135,17 +136,16 @@ fun EnterParamsAreaContent(
                     trailingText = stringResource(id = viewState.mainUnit.toStringResId()),
                     readOnly = true,
                 )
-                VerticalSpacer()
+                EqualsIcon()
                 EnterField(
                     text = viewState.priceForCustomAmount,
                     hint = stringResource(R.string.calc_price_hint),
                     modifier = Modifier.weight(1f),
                     trailingText = viewState.currency.sign,
                     readOnly = true,
-                    leadingIcon = { Text(text = "=") }
                 )
             }
-            Row {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 EnterField(
                     text = viewState.enteredAmount,
                     hint = stringResource(R.string.amount_hint),
@@ -159,13 +159,12 @@ fun EnterParamsAreaContent(
                         focusRequester.requestFocus()
                     }
                 )
-                VerticalSpacer()
+                EqualsIcon()
                 EnterField(
                     text = viewState.enteredPrice,
                     hint = stringResource(R.string.price_hint),
                     onTextChanged = onPriceChanged,
                     modifier = Modifier.weight(1.0f),
-                    leadingIcon = { Text(text = "=") },
                     trailingText = viewState.currency.sign,
                     onDone = {
                         onOkClicked()
@@ -234,7 +233,7 @@ fun EnterChipsSection(
                 modifier = Modifier.fillMaxWidth(),
                 label = {
                     Text(
-                        text = title,
+                        text = title.ifEmpty { stringResource(R.string.default_product_title) },
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -285,7 +284,6 @@ fun EnterField(
     hint: String,
     trailingText: String,
     modifier: Modifier = Modifier,
-    leadingIcon: @Composable (() -> Unit)? = null,
     readOnly: Boolean = false,
     onTextChanged: (String) -> Unit = {},
     onDone: () -> Unit = {}
@@ -301,7 +299,7 @@ fun EnterField(
             imeAction = ImeAction.Done
         ),
         trailingIcon = { Text(text = trailingText) },
-        leadingIcon = leadingIcon,
+        leadingIcon = null,
         textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.End),
         readOnly = readOnly,
         keyboardActions = KeyboardActions(
@@ -335,12 +333,20 @@ fun CustomChip(
                 shape = RoundedCornerShape(8.dp)
             )
             .sizeIn(minWidth = containerSize, minHeight = containerSize)
-            .padding(horizontal = 8.dp, vertical = 6.dp)
-            .clickable(onClick = onClick),
+            .clickable(onClick = onClick)
+            .padding(horizontal = 8.dp, vertical = 6.dp),
         contentAlignment = Alignment.Center
     ) {
         label()
     }
+}
+
+@Composable
+fun EqualsIcon() {
+    Icon(
+        imageVector = Icons.Filled.KeyboardDoubleArrowRight,
+        contentDescription = null,
+    )
 }
 
 @Composable

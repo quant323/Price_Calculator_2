@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -23,9 +24,9 @@ import androidx.compose.ui.unit.dp
 import com.zedevstuds.price_equalizer_redesign.R
 import com.zedevstuds.price_equalizer_redesign.core.ui.theme.PriceCalculatorTheme
 import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.models.MeasureUnit
-import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.models.ProductModel
 import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.models.getMainUnit
 import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.enterparams.toStringResId
+import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.models.ProductUiModel
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -33,10 +34,9 @@ private const val CALCULATED_AMOUNT = 1
 
 @Composable
 fun ProductListItem(
-    product: ProductModel,
-    bestPriceProduct: ProductModel?,
+    product: ProductUiModel,
+    bestPriceProduct: ProductUiModel?,
     currency: String,
-    index: Int,
     modifier: Modifier = Modifier,
     onEditClicked: () -> Unit = {},
     onDeleteClicked:() -> Unit = {},
@@ -58,10 +58,8 @@ fun ProductListItem(
     ) {
         Row {
             Text(
-                text = "$index. ${product.title}",
-                modifier = Modifier
-                    .weight(1f)
-                    .clickable { onEditClicked() },
+                text = "${product.index}. ${product.title}",
+                modifier = Modifier.weight(1f),
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.titleLarge
             )
@@ -84,11 +82,19 @@ fun ProductListItem(
                 )
             }
         }
-        Text(
-            text = calculatedParams + product.getPriceDiff(bestPriceProduct, currency),
-            fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.titleLarge
-        )
+        Row {
+            Text(
+                text = calculatedParams + product.getPriceDiff(bestPriceProduct, currency),
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.weight(1f),
+            )
+            Icon(
+                imageVector = Icons.Filled.Edit,
+                contentDescription = stringResource(R.string.remove_item_cont_desc),
+                modifier = Modifier.clickable { onEditClicked() }
+            )
+        }
     }
 }
 
@@ -100,14 +106,13 @@ fun ProductListItemPreview() {
             product = getDummyProduct(id = 1),
             bestPriceProduct = getDummyProduct(id = 2),
             currency = "$",
-            index = 1,
             modifier = Modifier.fillMaxWidth(),
             onEditClicked = {}
         )
     }
 }
 
-private fun ProductModel.getPriceDiff(bestPriceProduct: ProductModel?, currency: String): String {
+private fun ProductUiModel.getPriceDiff(bestPriceProduct: ProductUiModel?, currency: String): String {
     return if (bestPriceProduct != null && this != bestPriceProduct) {
         val diff = BigDecimal(priceForOneUnit - bestPriceProduct.priceForOneUnit)
             .setScale(2, RoundingMode.HALF_UP)
@@ -116,8 +121,9 @@ private fun ProductModel.getPriceDiff(bestPriceProduct: ProductModel?, currency:
 }
 
 
-private fun getDummyProduct(id: Int = 1): ProductModel {
-    return ProductModel(
+private fun getDummyProduct(id: Int = 1): ProductUiModel {
+    return ProductUiModel(
+        index = id,
         id = id,
         enteredAmount = "50",
         enteredPrice = "25$",
