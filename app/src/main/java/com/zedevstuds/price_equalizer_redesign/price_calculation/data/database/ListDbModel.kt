@@ -16,14 +16,14 @@ data class ListDbModel(
     val name: String,
 
     @ColumnInfo(name = "measure_unit")
-    val measureUnit: MeasureUnit
+    val measureUnit: MeasureUnit?
 )
 
 fun ListDbModel.toDomain() =
     ListModel(
         id = id,
         name = name,
-        measureUnit = measureUnit
+        measureUnit = measureUnit ?: MeasureUnit.KG
     )
 
 fun ListModel.toData() =

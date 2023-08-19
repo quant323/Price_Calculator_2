@@ -135,13 +135,13 @@ class MainScreenViewModel(
     private fun getProductLists() {
         viewModelScope.launch {
             getAllListsUseCase.execute().collect { list ->
-                if (list.isNotEmpty()) {
+                if (list.contains(defaultList)) {
                     selectedProductList.value =
                         getSelectedItem(newList = list, oldList = allLists.value)
                     enterParamsViewModel.setMeasureUnit(
                         selectedProductList.value.measureUnit
                     )
-                    allLists.value = list
+                    allLists.value = list.sortedBy { it.id }
                 } else {
                     addListUseCase.execute(defaultList)
                 }
