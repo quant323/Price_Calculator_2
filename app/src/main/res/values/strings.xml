@@ -63,12 +63,10 @@
     <string name="mexican_name" translatable="false">MXN</string>
     <string name="mexican_sign" translatable="false">$</string>
 
-    // TODO translate
     <string name="default_product_title">Name</string>
     <string name="default_list_title">Fast List</string>
     <string name="dialog_default_list_title">List</string>
 
-    // TODO translate
     <string name="message_insert_amount">Insert Amount!</string>
     <string name="message_insert_price">Insert Price!</string>
 </resources>
