@@ -1,4 +1,4 @@
-package com.zedevstuds.price_equalizer_redesign.price_calculation.ui.mainscreen.items
+package com.zedevstuds.price_equalizer_redesign.price_calculation.ui.items
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

@@ -6,15 +6,16 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
@@ -27,7 +28,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -54,6 +54,7 @@ fun NavigationDrawer(
     onListClicked: (ListModel) -> Unit,
     onEditList: (ListModel) -> Unit,
     onDarkModeClicked: (Boolean) -> Unit,
+    onAddListClicked: () -> Unit,
 ) {
 
     NavDrawerContent(
@@ -70,6 +71,7 @@ fun NavigationDrawer(
             scope.launch { drawerState.close() }
         },
         onDarkModeClicked = onDarkModeClicked,
+        onAddListClicked = onAddListClicked,
     )
 }
 
@@ -83,6 +85,7 @@ fun NavDrawerContent(
     onEditListClicked: (ListModel) -> Unit,
     onBackClicked: () -> Unit,
     onDarkModeClicked: (Boolean) -> Unit,
+    onAddListClicked: () -> Unit,
 ) {
     val drawerWidth = getDrawerWidth(LocalConfiguration.current.screenWidthDp)
 
@@ -118,15 +121,11 @@ fun NavDrawerContent(
                 )
             }
         }
+        Divider(modifier = Modifier.padding(horizontal = 8.dp))
+        AddListItem(onAdd = onAddListClicked)
         DarkModeItemSelector(
             isChecked = isDarkMode,
             onCheckedChange = onDarkModeClicked
-        )
-        NavigationDrawerItem(
-            label = { Text(text = stringResource(R.string.version_text, version)) },
-            selected = false,
-            onClick = { },
-            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
         )
     }
 }
@@ -163,31 +162,57 @@ fun MenuItemDrawer(
 }
 
 @Composable
-fun DarkModeItemSelector(
-    isChecked: Boolean,
-    onCheckedChange: (Boolean) -> Unit
-) {
-    var isSwitchChecked by remember { mutableStateOf(isChecked) }
+fun AddListItem(onAdd: () -> Unit) {
+
     NavigationDrawerItem(
         label = {
             Row(
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "Dark Mode", modifier = Modifier.weight(1f))
-                Switch(
-                    checked = isSwitchChecked,
-                    onCheckedChange = {
-                        onCheckedChange(it)
-                        isSwitchChecked = !isSwitchChecked
-                    }
+                Text(
+                    text = stringResource(R.string.add_list_item_title),
+                    modifier = Modifier.weight(1f)
                 )
+                Box(
+                    modifier = Modifier.size(48.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_add_circle_outline_24),
+                        contentDescription = null,
+                    )
+                }
             }
         },
         selected = false,
-        onClick = {},
+        onClick = onAdd,
         modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
     )
+}
+
+@Composable
+fun DarkModeItemSelector(
+    isChecked: Boolean,
+    onCheckedChange: (Boolean) -> Unit
+) {
+    var isSwitchChecked by remember { mutableStateOf(isChecked) }
+    Row(
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .height(56.dp)
+            .padding(start = 28.dp, end = 36.dp),
+    ) {
+        Text(text = "Dark Mode", modifier = Modifier.weight(1f))
+        Switch(
+            checked = isSwitchChecked,
+            onCheckedChange = {
+                onCheckedChange(it)
+                isSwitchChecked = !isSwitchChecked
+            }
+        )
+    }
 }
 
 private fun getDrawerWidth(screenWidth: Int): Dp = (screenWidth * DRAWER_WIDTH).toInt().dp
@@ -204,6 +229,7 @@ fun DrawerPreview() {
         onEditListClicked = {},
         onBackClicked = {},
         onDarkModeClicked = {},
+        onAddListClicked = {},
     )
 }
 
@@ -246,47 +272,3 @@ private val listItems = listOf(
     ListModel(14, "Cheese"),
     ListModel(15, "Apples")
 )
-
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun ModalNavigationDrawerSample(content: @Composable () -> Unit) {
-//    val drawerState = rememberDrawerState(DrawerValue.Closed)
-//    val scope = rememberCoroutineScope()
-//    // icons to mimic drawer destinations
-//    val items = listOf(Icons.Default.Favorite, Icons.Default.Face, Icons.Default.Email)
-//    val selectedItem = remember { mutableStateOf(items[0]) }
-//    ModalNavigationDrawer(
-//        drawerState = drawerState,
-//        drawerContent = {
-//            ModalDrawerSheet {
-//                Spacer(Modifier.height(12.dp))
-//                items.forEach { item ->
-//                    NavigationDrawerItem(
-//                        icon = { Icon(item, contentDescription = null) },
-//                        label = { Text(item.name) },
-//                        selected = item == selectedItem.value,
-//                        onClick = {
-//                            scope.launch { drawerState.close() }
-//                            selectedItem.value = item
-//                        },
-//                        modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
-//                    )
-//                }
-//            }
-//        },
-//        content = {
-//            Column(
-//                modifier = Modifier
-//                    .fillMaxSize()
-//                    .padding(16.dp),
-//                horizontalAlignment = Alignment.CenterHorizontally
-//            ) {
-//                Text(text = if (drawerState.isClosed) ">>> Swipe >>>" else "<<< Swipe <<<")
-//                Spacer(Modifier.height(20.dp))
-//                Button(onClick = { scope.launch { drawerState.open() } }) {
-//                    Text("Click to open")
-//                }
-//            }
-//        }
-//    )
-//}

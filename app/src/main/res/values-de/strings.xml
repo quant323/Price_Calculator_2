@@ -14,7 +14,7 @@
     <string name="clear_list_cont_desc">Liste leeren</string>
     <string name="hide_params_cont_desc">Parameter ausblenden</string>
     <string name="close_drawer_cont_desc">Schublade schließen</string>
-    <string name="add_list_cont_desc">"Liste hinzufügen "</string>
+    <string name="add_list_item_title">"Liste hinzufügen "</string>
     <string name="show_menu_cont_desc">Menü anzeigen</string>
     <string name="sort_products_cont_desc">Produkte sortieren</string>
     <string name="remove_item_cont_desc">Artikel entfernen</string>
@@ -39,4 +39,5 @@
     <string name="edit_list_title_dialog_hint">Listennamen</string>
     <string name="message_insert_amount">Betrag eingeben!</string>
     <string name="message_insert_price">Preis einfügen!</string>
+    <string name="about_menu_title">"Über"</string>
 </resources>

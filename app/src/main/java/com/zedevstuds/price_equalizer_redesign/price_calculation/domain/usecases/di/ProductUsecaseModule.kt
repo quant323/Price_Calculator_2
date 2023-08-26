@@ -5,7 +5,7 @@ import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.usecases
 import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.usecases.product.DeleteProductUseCase
 import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.usecases.product.GetPriceForOneUnitUseCase
 import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.usecases.product.GetProductsForListByListIdUseCase
-import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.usecases.product.UpdateProductTitleUseCase
+import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.usecases.product.UpdateProductUseCase
 import org.koin.dsl.module
 
 val productUseCaseModule = module {
@@ -25,6 +25,6 @@ val productUseCaseModule = module {
         GetProductsForListByListIdUseCase(productRepository = get())
     }
     factory {
-        UpdateProductTitleUseCase(productRepository = get())
+        UpdateProductUseCase(productRepository = get())
     }
 }

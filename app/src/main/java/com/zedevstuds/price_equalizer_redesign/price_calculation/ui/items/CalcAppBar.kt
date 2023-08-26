@@ -1,4 +1,4 @@
-package com.zedevstuds.price_equalizer_redesign.price_calculation.ui.mainscreen.items
+package com.zedevstuds.price_equalizer_redesign.price_calculation.ui.items
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -30,9 +30,9 @@ fun CalcAppBar(
     isDeleteEnabled: Boolean,
     onCurrencyClicked: () -> Unit,
     onSortClicked: () -> Unit,
-    onCreateListClicked: () -> Unit,
     onDeleteListClicked: () -> Unit,
     onNavigationIconClick: () -> Unit,
+    onAboutClicked: () -> Unit,
 ) {
     var showMenu by remember { mutableStateOf(false) }
 
@@ -64,13 +64,6 @@ fun CalcAppBar(
                 onDismissRequest = { showMenu = false }
             ) {
                 DropdownMenuItem(
-                    text = { Text(text = stringResource(R.string.create_list_menu_title)) },
-                    onClick = {
-                        onCreateListClicked()
-                        showMenu = false
-                    }
-                )
-                DropdownMenuItem(
                     text = { Text(text = stringResource(R.string.delete_list_menu_title)) },
                     enabled = isDeleteEnabled,
                     onClick = {
@@ -82,6 +75,13 @@ fun CalcAppBar(
                     text = { Text(text = stringResource(R.string.currency_menu_title, currency)) },
                     onClick = {
                         onCurrencyClicked()
+                        showMenu = false
+                    }
+                )
+                DropdownMenuItem(
+                    text = { Text(text = stringResource(R.string.about_menu_title, currency)) },
+                    onClick = {
+                        onAboutClicked()
                         showMenu = false
                     }
                 )
@@ -105,8 +105,8 @@ fun CalcAppBarPreview() {
         isDeleteEnabled = true,
         onCurrencyClicked = {},
         onSortClicked = {},
-        onCreateListClicked = {},
         onDeleteListClicked = {},
-        onNavigationIconClick = {}
+        onNavigationIconClick = {},
+        onAboutClicked = {},
     )
 }

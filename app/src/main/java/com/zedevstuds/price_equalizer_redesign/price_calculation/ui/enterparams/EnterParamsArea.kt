@@ -21,7 +21,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material.icons.filled.KeyboardDoubleArrowRight
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
@@ -39,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -50,7 +50,7 @@ import com.zedevstuds.price_equalizer_redesign.R
 import com.zedevstuds.price_equalizer_redesign.core.ui.theme.PriceCalculatorTheme
 import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.models.MeasureUnit
 import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.models.listOfUnits
-import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.mainscreen.items.ProductTitleDialog
+import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.items.ProductTitleDialog
 
 @Composable
 fun EnterParamsArea(
@@ -85,8 +85,8 @@ fun EnterParamsArea(
     if (showEditTitleDialog) {
         ProductTitleDialog(
             currentTitle = viewModel.enterParamsViewState.value.title,
-            onConfirm = {
-                viewModel.onTitleChanged(it)
+            onConfirm = { title ->
+                viewModel.onTitleChanged(title)
                 showEditTitleDialog = false
             },
             onDismiss = { showEditTitleDialog = false }
@@ -344,7 +344,7 @@ fun CustomChip(
 @Composable
 fun EqualsIcon() {
     Icon(
-        imageVector = Icons.Filled.KeyboardDoubleArrowRight,
+        painter = painterResource(R.drawable.ic_keyboard_double_arrow_right_24),
         contentDescription = null,
     )
 }

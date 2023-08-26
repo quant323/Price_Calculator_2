@@ -15,8 +15,9 @@ import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.usecases
 import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.usecases.product.AddProductUseCase
 import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.usecases.product.DeleteProductUseCase
 import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.usecases.product.DeleteProductsInListUseCase
+import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.usecases.product.GetPriceForOneUnitUseCase
 import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.usecases.product.GetProductsForListByListIdUseCase
-import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.usecases.product.UpdateProductTitleUseCase
+import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.usecases.product.UpdateProductUseCase
 import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.enterparams.CurrencyUi
 import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.enterparams.EnterParamsViewModel
 import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.models.ProductUiModel
@@ -42,12 +43,13 @@ class MainScreenViewModel(
     private val deleteProductsInListUseCase: DeleteProductsInListUseCase,
     private val deleteProductUseCase: DeleteProductUseCase,
     private val getProductsForListByListIdUseCase: GetProductsForListByListIdUseCase,
-    private val updateProductTitleUseCase: UpdateProductTitleUseCase,
+    private val updateProductUseCase: UpdateProductUseCase,
     private val addListUseCase: AddListUseCase,
     private val deleteListUseCase: DeleteListUseCase,
     private val updateListUseCase: UpdateListUseCase,
     private val getAllListsUseCase: GetAllListsUseCase,
     private val preferenceRepository: PreferenceRepository,
+    private val getPriceForOneUnitUseCase: GetPriceForOneUnitUseCase,
     context: Context,
 ) : ViewModel() {
 
@@ -133,9 +135,17 @@ class MainScreenViewModel(
         }
     }
 
-    fun updateProductTitle(updatedProduct: ProductUiModel) {
+    fun updateProduct(updatedProduct: ProductUiModel) {
         viewModelScope.launch {
-            updateProductTitleUseCase.execute(updatedProduct.toDomain(), selectedProductList.value.id)
+            val priceForCustomAmount = getPriceForOneUnitUseCase.execute(
+                amount = updatedProduct.enteredAmount,
+                price = updatedProduct.enteredPrice,
+                measureUnit = updatedProduct.selectedMeasureUnit
+            )
+            updateProductUseCase.execute(
+                product = updatedProduct.copy(priceForOneUnit = priceForCustomAmount).toDomain(),
+                listId = selectedProductList.value.id
+            )
         }
     }
 

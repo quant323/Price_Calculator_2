@@ -25,8 +25,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.zedevstuds.price_equalizer_redesign.R
 import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.models.MeasureUnit
-import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.mainscreen.items.ProductListItem
-import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.mainscreen.items.ProductTitleDialog
+import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.items.ProductListItem
+import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.items.EditProductDialog
 import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.models.ProductUiModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -38,7 +38,7 @@ fun MainScreenContent(
     scrollToFlow: Flow<MainScreenViewModel.ScrollPosition>,
     modifier: Modifier = Modifier,
     onDeleteProduct: (ProductUiModel) -> Unit,
-    onUpdateProductTitle: (ProductUiModel) -> Unit,
+    onUpdateProduct: (ProductUiModel) -> Unit,
 ) {
     val scrollState = rememberLazyListState()
 
@@ -76,10 +76,12 @@ fun MainScreenContent(
             }
         }
         productToEdit?.let { product ->
-            ProductTitleDialog(
+            EditProductDialog(
                 currentTitle = product.title,
-                onConfirm = {
-                    onUpdateProductTitle(product.copy(title = it))
+                currentAmount = product.enteredAmount,
+                currentPrice = product.enteredPrice,
+                onConfirm = { title, amount, price ->
+                    onUpdateProduct(product.copy(title = title, enteredAmount = amount, enteredPrice = price))
                     productToEdit = null
                 },
                 onDismiss = { productToEdit = null }
@@ -113,7 +115,7 @@ fun MainScreenContentPreview() {
         currency = "$",
         scrollToFlow = flow {  },
         onDeleteProduct = {},
-        onUpdateProductTitle = {}
+        onUpdateProduct = {}
     )
 }
 

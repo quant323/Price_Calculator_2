@@ -29,10 +29,11 @@ import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.models.L
 import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.drawer.NavigationDrawer
 import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.enterparams.CurrencyUi
 import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.enterparams.EnterParamsArea
-import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.mainscreen.items.ListTitleDialog
-import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.mainscreen.items.CalcAppBar
-import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.mainscreen.items.DeleteListDialog
-import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.mainscreen.items.SelectCurrencyDialog
+import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.items.AboutDialog
+import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.items.ListTitleDialog
+import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.items.CalcAppBar
+import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.items.DeleteListDialog
+import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.items.SelectCurrencyDialog
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -51,6 +52,7 @@ fun MainScreen(
     var showCurrencyDialog by remember { mutableStateOf(false) }
     var showAddListDialog by remember { mutableStateOf(false) }
     var showDeleteListDialog by remember { mutableStateOf(false) }
+    var showAboutDialog by remember { mutableStateOf(false) }
     val currentList = mainViewModel.selectedProductList.collectAsState()
     val allLists = mainViewModel.allLists.collectAsState()
     val isSortApplied = mainViewModel.isSortApplied.collectAsState()
@@ -72,7 +74,10 @@ fun MainScreen(
                 onEditList = {
                     listToChangeName = it
                 },
-                onDarkModeClicked = onThemeUpdated
+                onDarkModeClicked = onThemeUpdated,
+                onAddListClicked = {
+                    showAddListDialog = true
+                }
             )
         }
     ) {
@@ -86,11 +91,11 @@ fun MainScreen(
                     isDeleteEnabled = currentList.value.id != MainScreenViewModel.DEFAULT_LIST_ID,
                     onCurrencyClicked = { showCurrencyDialog = true },
                     onSortClicked = mainViewModel::onSortClicked,
-                    onCreateListClicked = { showAddListDialog = true },
                     onDeleteListClicked = { showDeleteListDialog = true },
                     onNavigationIconClick = {
                         coroutineScope.launch { drawerState.open() }
-                    }
+                    },
+                    onAboutClicked = { showAboutDialog = true }
                 )
             },
         ) { contentPadding ->
@@ -108,9 +113,7 @@ fun MainScreen(
                     scrollToFlow = mainViewModel.scrollTo,
                     modifier = Modifier.weight(1f),
                     onDeleteProduct = mainViewModel::onDeleteProduct,
-                    onUpdateProductTitle = { product ->
-                        mainViewModel.updateProductTitle(product)
-                    }
+                    onUpdateProduct = mainViewModel::updateProduct
                 )
                 EnterParamsArea(viewModel = mainViewModel.enterParamsViewModel)
             }
@@ -156,6 +159,13 @@ fun MainScreen(
                         listToChangeName = null
                     },
                     onDismiss = { listToChangeName = null }
+                )
+            }
+            if (showAboutDialog) {
+                AboutDialog(
+                    version = mainViewModel.getVersionName(),
+                    onConfirm = { showAboutDialog = false },
+                    onDismiss = { showAboutDialog = false }
                 )
             }
             LaunchedEffect(context) {

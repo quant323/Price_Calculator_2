@@ -21,12 +21,13 @@ val viewModelsModule = module {
             addProductUseCase = get(),
             deleteProductUseCase = get(),
             getProductsForListByListIdUseCase = get(),
-            updateProductTitleUseCase = get(),
+            updateProductUseCase = get(),
             deleteListUseCase = get(),
             addListUseCase = get(),
             updateListUseCase = get(),
             getAllListsUseCase = get(),
             preferenceRepository = get(),
+            getPriceForOneUnitUseCase = get(),
             context = androidContext(),
         )
     }

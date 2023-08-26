@@ -14,14 +14,14 @@
     <string name="clear_list_cont_desc">Очистить список</string>
     <string name="hide_params_cont_desc">Скрыть параметры</string>
     <string name="close_drawer_cont_desc">Закрыть шторку</string>
-    <string name="add_list_cont_desc">Добавить список</string>
+    <string name="add_list_item_title">Добавить список</string>
     <string name="show_menu_cont_desc">Показать меню</string>
     <string name="sort_products_cont_desc">Отсортировать список</string>
     <string name="remove_item_cont_desc">Удалить элемент</string>
     <string name="best_price_cont_desc">Лучшая цена</string>
     <string name="create_list_dialog_title">Создать список</string>
     <string name="edit_list_dialog_title">Изменить список</string>
-    <string name="edit_product_title_dialog_hint">Название продукта</string>
+    <string name="edit_product_title_dialog_hint">Название</string>
     <string name="gram">г</string>
     <string name="kilogram">кг</string>
     <string name="liter">Л</string>
@@ -39,4 +39,5 @@
     <string name="edit_list_title_dialog_hint">Название списка</string>
     <string name="message_insert_amount">Введите кол-во!</string>
     <string name="message_insert_price">Введите кол-во!</string>
+    <string name="about_menu_title">О программе</string>
 </resources>

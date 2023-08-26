@@ -213,7 +213,7 @@ class EnterParamsViewModel(
 
     sealed class EnterParamsEvent {
         class AddProductEvent(val product: ProductModel) : EnterParamsEvent()
-        object CleanListEvent : EnterParamsEvent()
+        data object CleanListEvent : EnterParamsEvent()
         class MeasureUnitSelectedEvent(val unit: MeasureUnit) : EnterParamsEvent()
         class ShowMessageEvent(@StringRes val messageId: Int) : EnterParamsEvent()
     }

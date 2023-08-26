@@ -1,5 +1,8 @@
-package com.zedevstuds.price_equalizer_redesign.price_calculation.ui.mainscreen.items
+package com.zedevstuds.price_equalizer_redesign.price_calculation.ui.items
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
@@ -21,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.zedevstuds.price_equalizer_redesign.R
 import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.models.ListModel
 import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.enterparams.CurrencyUi
@@ -47,7 +51,7 @@ fun ProductTitleDialog(
                 Text(text = stringResource(R.string.cancel_dialog_button_title))
             }
         },
-        title = {
+        text = {
             CleanableTextField(
                 title = productName,
                 hint = stringResource(R.string.edit_product_title_dialog_hint),
@@ -56,6 +60,68 @@ fun ProductTitleDialog(
                 },
                 onClear = { productName = "" }
             )
+        }
+    )
+}
+
+@Composable
+fun EditProductDialog(
+    currentTitle: String,
+    currentAmount: String,
+    currentPrice: String,
+    onConfirm: (title: String, amount: String, price: String) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    var productName by remember { mutableStateOf(currentTitle) }
+    var amount by remember { mutableStateOf(currentAmount) }
+    var price by remember { mutableStateOf(currentPrice) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            Button(
+                onClick = {
+                    onConfirm(productName, amount, price)
+                },
+                enabled = amount.isNotEmpty() && price.isNotEmpty()
+            ) {
+                Text(text = stringResource(R.string.ok_dialog_button_title))
+            }
+        },
+        dismissButton = {
+            Button(onClick = onDismiss) {
+                Text(text = stringResource(R.string.cancel_dialog_button_title))
+            }
+        },
+        text = {
+            Column {
+                CleanableTextField(
+                    title = productName,
+                    hint = stringResource(R.string.edit_product_title_dialog_hint),
+                    onValueChange = {
+                        productName = it
+                    },
+                    onClear = { productName = "" }
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                CleanableTextField(
+                    title = amount,
+                    hint = stringResource(R.string.amount_hint),
+                    onValueChange = { value ->
+                        amount = value
+                    },
+                    onClear = { amount = "" }
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                CleanableTextField(
+                    title = price,
+                    hint = stringResource(R.string.price_hint),
+                    onValueChange = { value ->
+                        price = value
+                    },
+                    onClear = { price = "" }
+                )
+            }
         }
     )
 }
@@ -92,7 +158,7 @@ fun ListTitleDialog(
                 Text(text = stringResource(R.string.cancel_dialog_button_title))
             }
         },
-        title = {
+        text = {
             CleanableTextField(
                 title = listName,
                 hint = stringResource(R.string.edit_list_title_dialog_hint),
@@ -158,7 +224,7 @@ fun SelectCurrencyDialog(
                 Text(text = stringResource(R.string.cancel_dialog_button_title))
             }
         },
-        title = {
+        text = {
             SelectCurrencyDropDown(
                 currencyList = currencyList,
                 currentCurrency = currency,
@@ -182,7 +248,9 @@ fun CleanableTextField(
         label = {
             Text(hint)
         },
-        textStyle = LocalTextStyle.current.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
+        textStyle = LocalTextStyle.current.copy(
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        ),
         singleLine = true,
         trailingIcon = {
             IconButton(onClick = onClear) {
@@ -238,14 +306,54 @@ fun SelectCurrencyDropDown(
     }
 }
 
+@Composable
+fun AboutDialog(
+    version: String,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            Button(
+                onClick = { onConfirm() }
+            ) {
+                Text(text = stringResource(R.string.ok_dialog_button_title))
+            }
+        },
+        dismissButton = null,
+        title = {
+            Text(text = stringResource(R.string.about_menu_title))
+        },
+        text = {
+            Text(
+                text = stringResource(R.string.version_text, version),
+                style = MaterialTheme.typography.titleMedium
+            )
+        }
+    )
+}
+
 private fun getCurrencyText(currency: CurrencyUi) = "${currency.name} (${currency.sign})"
 
 @Preview
 @Composable
-fun EditTitleDialogPreview() {
+fun ProductTitleDialogPreview() {
     ProductTitleDialog(
         currentTitle = "Product 1",
         onConfirm = {},
+        onDismiss = {}
+    )
+}
+
+@Preview
+@Composable
+fun EditProductDialogPreview() {
+    EditProductDialog(
+        currentTitle = "Product 1",
+        currentAmount = "50",
+        currentPrice = "12",
+        onConfirm = { _,_,_ -> },
         onDismiss = {}
     )
 }
@@ -277,6 +385,16 @@ fun ListTitleDialogPreview() {
 fun DeleteListDialogPreview() {
     DeleteListDialog(
         listTitle = "List 1",
+        onConfirm = {},
+        onDismiss = {}
+    )
+}
+
+@Preview
+@Composable
+fun AboutDialogPreview() {
+    AboutDialog(
+        version = "0.7",
         onConfirm = {},
         onDismiss = {}
     )

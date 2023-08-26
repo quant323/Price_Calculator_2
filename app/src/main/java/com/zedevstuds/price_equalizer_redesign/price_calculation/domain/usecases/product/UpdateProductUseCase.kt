@@ -3,7 +3,7 @@ package com.zedevstuds.price_equalizer_redesign.price_calculation.domain.usecase
 import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.models.ProductModel
 import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.repositories.ProductRepository
 
-class UpdateProductTitleUseCase(
+class UpdateProductUseCase(
     private val productRepository: ProductRepository
 ) {
 
