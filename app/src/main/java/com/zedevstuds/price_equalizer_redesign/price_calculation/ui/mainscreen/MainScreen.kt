@@ -25,8 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.zedevstuds.price_equalizer_redesign.R
 import com.zedevstuds.price_equalizer_redesign.core.ui.theme.PriceCalculatorTheme
-import com.zedevstuds.price_equalizer_redesign.price_calculation.domain.models.ListModel
-import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.drawer.NavigationDrawer
+import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.items.NavigationDrawer
 import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.enterparams.CurrencyUi
 import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.enterparams.EnterParamsArea
 import com.zedevstuds.price_equalizer_redesign.price_calculation.ui.items.AboutDialog
@@ -52,11 +51,11 @@ fun MainScreen(
     var showCurrencyDialog by remember { mutableStateOf(false) }
     var showAddListDialog by remember { mutableStateOf(false) }
     var showDeleteListDialog by remember { mutableStateOf(false) }
+    var showRenameListDialog by remember { mutableStateOf(false) }
     var showAboutDialog by remember { mutableStateOf(false) }
     val currentList = mainViewModel.selectedProductList.collectAsState()
     val allLists = mainViewModel.allLists.collectAsState()
     val isSortApplied = mainViewModel.isSortApplied.collectAsState()
-    var listToChangeName by remember { mutableStateOf<ListModel?>(null) }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -70,9 +69,6 @@ fun MainScreen(
                 drawerState = drawerState,
                 onListClicked = {
                     mainViewModel.onListClicked(it)
-                },
-                onEditList = {
-                    listToChangeName = it
                 },
                 onDarkModeClicked = onThemeUpdated,
                 onAddListClicked = {
@@ -88,10 +84,11 @@ fun MainScreen(
                     currency = mainViewModel.getCurrency().sign,
                     isSortEnabled = productList.value.size > 1,
                     isSortApplied = isSortApplied.value,
-                    isDeleteEnabled = currentList.value.id != MainScreenViewModel.DEFAULT_LIST_ID,
+                    isModifyListEnabled = currentList.value.id != MainScreenViewModel.DEFAULT_LIST_ID,
                     onCurrencyClicked = { showCurrencyDialog = true },
                     onSortClicked = mainViewModel::onSortClicked,
                     onDeleteListClicked = { showDeleteListDialog = true },
+                    onRenameListClicked = { showRenameListDialog = true },
                     onNavigationIconClick = {
                         coroutineScope.launch { drawerState.open() }
                     },
@@ -135,7 +132,6 @@ fun MainScreen(
                     onConfirm = { title ->
                         mainViewModel.addProductList(title)
                         showAddListDialog = false
-                        coroutineScope.launch { drawerState.close() }
                     },
                     onDismiss = { showAddListDialog = false }
                 )
@@ -150,15 +146,15 @@ fun MainScreen(
                     onDismiss = { showDeleteListDialog = false }
                 )
             }
-            listToChangeName?.let { listModel ->
+            if (showRenameListDialog) {
                 ListTitleDialog(
-                    initialListName = listModel.name,
+                    initialListName = currentList.value.name,
                     listsOfProducts = allLists.value,
                     onConfirm = { title ->
-                        mainViewModel.updateListTitle(listModel.copy(name = title))
-                        listToChangeName = null
+                        mainViewModel.updateListTitle(currentList.value.copy(name = title))
+                        showRenameListDialog = false
                     },
-                    onDismiss = { listToChangeName = null }
+                    onDismiss = { showRenameListDialog = false }
                 )
             }
             if (showAboutDialog) {

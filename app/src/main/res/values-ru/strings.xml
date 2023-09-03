@@ -6,6 +6,7 @@
     <string name="delete_dialog_text">Удалить %s?</string>
     <string name="create_list_menu_title">Создать список</string>
     <string name="delete_list_menu_title">Удалить список</string>
+    <string name="rename_list_menu_title">Переименовать список</string>
     <string name="currency_menu_title">Валюта (%s)</string>
     <string name="amount_hint">Кол-во</string>
     <string name="price_hint">Цена</string>
@@ -40,4 +41,5 @@
     <string name="message_insert_amount">Введите кол-во!</string>
     <string name="message_insert_price">Введите цену!</string>
     <string name="about_menu_title">О программе</string>
+    <string name="dark_mode_title">Темная Тема</string>
 </resources>

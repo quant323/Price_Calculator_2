@@ -27,10 +27,11 @@ fun CalcAppBar(
     currency: String,
     isSortEnabled: Boolean,
     isSortApplied: Boolean,
-    isDeleteEnabled: Boolean,
+    isModifyListEnabled: Boolean,
     onCurrencyClicked: () -> Unit,
     onSortClicked: () -> Unit,
     onDeleteListClicked: () -> Unit,
+    onRenameListClicked: () -> Unit,
     onNavigationIconClick: () -> Unit,
     onAboutClicked: () -> Unit,
 ) {
@@ -64,8 +65,16 @@ fun CalcAppBar(
                 onDismissRequest = { showMenu = false }
             ) {
                 DropdownMenuItem(
+                    text = { Text(text = stringResource(R.string.rename_list_menu_title)) },
+                    enabled = isModifyListEnabled,
+                    onClick = {
+                        onRenameListClicked()
+                        showMenu = false
+                    }
+                )
+                DropdownMenuItem(
                     text = { Text(text = stringResource(R.string.delete_list_menu_title)) },
-                    enabled = isDeleteEnabled,
+                    enabled = isModifyListEnabled,
                     onClick = {
                         onDeleteListClicked()
                         showMenu = false
@@ -102,10 +111,11 @@ fun CalcAppBarPreview() {
         currency = "$",
         isSortApplied = false,
         isSortEnabled = true,
-        isDeleteEnabled = true,
+        isModifyListEnabled = true,
         onCurrencyClicked = {},
         onSortClicked = {},
         onDeleteListClicked = {},
+        onRenameListClicked = {},
         onNavigationIconClick = {},
         onAboutClicked = {},
     )

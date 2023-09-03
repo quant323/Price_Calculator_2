@@ -1,4 +1,4 @@
-package com.zedevstuds.price_equalizer_redesign.price_calculation.ui.drawer
+package com.zedevstuds.price_equalizer_redesign.price_calculation.ui.items
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,7 +15,6 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
@@ -52,7 +51,6 @@ fun NavigationDrawer(
     drawerState: DrawerState,
     isDarkMode: Boolean,
     onListClicked: (ListModel) -> Unit,
-    onEditList: (ListModel) -> Unit,
     onDarkModeClicked: (Boolean) -> Unit,
     onAddListClicked: () -> Unit,
 ) {
@@ -66,7 +64,6 @@ fun NavigationDrawer(
             onListClicked(item)
             scope.launch { drawerState.close() }
         },
-        onEditListClicked = onEditList,
         onBackClicked = {
             scope.launch { drawerState.close() }
         },
@@ -82,7 +79,6 @@ fun NavDrawerContent(
     version: String,
     isDarkMode: Boolean,
     onListClicked: (ListModel) -> Unit,
-    onEditListClicked: (ListModel) -> Unit,
     onBackClicked: () -> Unit,
     onDarkModeClicked: (Boolean) -> Unit,
     onAddListClicked: () -> Unit,
@@ -115,9 +111,6 @@ fun NavDrawerContent(
                     onItemClicked = {
                         onListClicked(productList)
                     },
-                    onEditTitleClicked = {
-                        onEditListClicked(productList)
-                    }
                 )
             }
         }
@@ -135,8 +128,7 @@ fun MenuItemDrawer(
     title: String,
     selected: Boolean,
     isEditVisible: Boolean,
-    onItemClicked: () -> Unit,
-    onEditTitleClicked: () -> Unit
+    onItemClicked: () -> Unit
 ) {
     NavigationDrawerItem(
         label = {
@@ -145,14 +137,6 @@ fun MenuItemDrawer(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(text = title, modifier = Modifier.weight(1f))
-                if (isEditVisible) {
-                    IconButton(onClick = onEditTitleClicked) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_edit_24),
-                            contentDescription = stringResource(R.string.edit_list_cont_desc)
-                        )
-                    }
-                }
             }
         },
         selected = selected,
@@ -204,7 +188,10 @@ fun DarkModeItemSelector(
             .height(56.dp)
             .padding(start = 28.dp, end = 36.dp),
     ) {
-        Text(text = "Dark Mode", modifier = Modifier.weight(1f))
+        Text(
+            text = stringResource(R.string.dark_mode_title),
+            modifier = Modifier.weight(1f)
+        )
         Switch(
             checked = isSwitchChecked,
             onCheckedChange = {
@@ -226,7 +213,6 @@ fun DrawerPreview() {
         version = "0.2",
         isDarkMode = false,
         onListClicked = {},
-        onEditListClicked = {},
         onBackClicked = {},
         onDarkModeClicked = {},
         onAddListClicked = {},
@@ -241,7 +227,6 @@ fun MenuItemDrawerPreview() {
         selected = false,
         isEditVisible = true,
         onItemClicked = {},
-        onEditTitleClicked = {}
     )
 }
 

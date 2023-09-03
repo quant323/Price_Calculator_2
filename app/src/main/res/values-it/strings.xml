@@ -6,6 +6,7 @@
     <string name="delete_dialog_text">Eliminare %s?</string>
     <string name="create_list_menu_title">Crea lista</string>
     <string name="delete_list_menu_title">Elimina elenco</string>
+    <string name="rename_list_menu_title">Rinomina elenco</string>
     <string name="currency_menu_title">Valuta (%s)</string>
     <string name="amount_hint">Quantità</string>
     <string name="price_hint">Prezzo</string>
@@ -40,4 +41,5 @@
     <string name="message_insert_amount">Inserisci Importo!</string>
     <string name="message_insert_price">Inserisci il prezzo!</string>
     <string name="about_menu_title">Riguardo</string>
+    <string name="dark_mode_title">Modalità scura</string>
 </resources>
