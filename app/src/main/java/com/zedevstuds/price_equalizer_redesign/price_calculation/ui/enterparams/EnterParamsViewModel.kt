@@ -140,6 +140,7 @@ class EnterParamsViewModel(
             )
         } catch (e: Exception) {
             Log.d(TAG, "calculatePriceForCustomAmount exception: ${e.message}")
+            sendMessageEvent(R.string.message_incorrect_format)
         }
     }
 
@@ -193,6 +194,7 @@ class EnterParamsViewModel(
             LANG_BRA -> CurrencyUi.BRAZIL
             LANG_KAZ -> CurrencyUi.KAZAKH
             LANG_KOR -> CurrencyUi.KOREAN
+            LANG_POL -> CurrencyUi.POL
             else -> CurrencyUi.DOLLAR
         }
     }
@@ -235,5 +237,6 @@ class EnterParamsViewModel(
         private const val LANG_KOR = "ko"
         private const val LANG_UKR = "uk"
         private const val LANG_KAZ = "kk"
+        private const val LANG_POL = "pl"
     }
 }

@@ -24,6 +24,10 @@ data class CurrencyUi(val sign: String, val name: String) {
         private const val PHILIP_NAME ="PHP"
         private const val MEXICAN_SIGN = "$"
         private const val MEXICAN_NAME = "MXN"
+        private const val GBR_NAME = "GBP"
+        private const val GBR_SIGN = "£"
+        private const val POL_NAME = "PLN"
+        private const val POL_SIGN = "zł"
 
         val DOLLAR = CurrencyUi(DOLLAR_SIGN, DOLLAR_NAME)
         val EURO = CurrencyUi(EURO_SIGN, EURO_NAME)
@@ -36,6 +40,8 @@ data class CurrencyUi(val sign: String, val name: String) {
         val KOREAN = CurrencyUi(KOREAN_SIGN, KOREAN_NAME)
         val PHILIP = CurrencyUi(PHILIP_SIGN, PHILIP_NAME)
         val MEXICAN = CurrencyUi(MEXICAN_SIGN, MEXICAN_NAME)
+        val GRB = CurrencyUi(GBR_SIGN, GBR_NAME)
+        val POL = CurrencyUi(POL_SIGN, POL_NAME)
 
         val currencyList = listOf(
             DOLLAR,
@@ -49,6 +55,8 @@ data class CurrencyUi(val sign: String, val name: String) {
             KOREAN,
             PHILIP,
             MEXICAN,
+            GRB,
+            POL,
         )
     }
 }

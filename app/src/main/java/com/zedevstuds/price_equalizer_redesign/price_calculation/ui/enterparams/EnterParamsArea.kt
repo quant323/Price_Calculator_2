@@ -154,6 +154,7 @@ fun EnterParamsAreaContent(
                         .weight(1.0f)
                         .focusRequester(focusRequester),
                     trailingText = stringResource(id = viewState.selectedUnit.toStringResId()),
+                    imeAction = ImeAction.Next,
                     onDone = {
                         onOkClicked()
                         focusRequester.requestFocus()
@@ -279,12 +280,13 @@ fun EnterChipsSection(
 }
 
 @Composable
-fun EnterField(
+private fun EnterField(
     text: String,
     hint: String,
     trailingText: String,
     modifier: Modifier = Modifier,
     readOnly: Boolean = false,
+    imeAction: ImeAction = ImeAction.Done,
     onTextChanged: (String) -> Unit = {},
     onDone: () -> Unit = {}
 ) {
@@ -296,7 +298,7 @@ fun EnterField(
         modifier = modifier,
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Decimal,
-            imeAction = ImeAction.Done
+            imeAction = imeAction
         ),
         trailingIcon = { Text(text = trailingText) },
         leadingIcon = null,

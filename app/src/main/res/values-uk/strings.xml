@@ -42,4 +42,5 @@
     <string name="message_insert_price">Введите кол-во!</string>
     <string name="about_menu_title">О программе</string>
     <string name="dark_mode_title">Темная Тема</string>
+    <string name="message_incorrect_format">Неверный формат!</string>
 </resources>

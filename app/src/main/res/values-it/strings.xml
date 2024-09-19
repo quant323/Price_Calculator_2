@@ -42,4 +42,5 @@
     <string name="message_insert_price">Inserisci il prezzo!</string>
     <string name="about_menu_title">Riguardo</string>
     <string name="dark_mode_title">Modalità scura</string>
+    <string name="message_incorrect_format">Formato non corretto!</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.zedevstuds.price_equalizer_redesign.price_calculation.ui.items
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -45,6 +46,8 @@ fun ProductListItem(
     val mainUnit = stringResource(product.selectedMeasureUnit.getMainUnit().toStringResId())
     val enteredParams = "${product.enteredAmount} $selectedUnit - ${product.enteredPrice} $currency"
     val calculatedParams = "$CALCULATED_AMOUNT $mainUnit - ${product.priceForOneUnit} $currency"
+    val isBestProduct = product == bestPriceProduct
+    val backgroundColor = if (isBestProduct) MaterialTheme.colorScheme.inversePrimary else MaterialTheme.colorScheme.background
 
     Column(
         modifier = modifier
@@ -53,7 +56,7 @@ fun ProductListItem(
                 color = MaterialTheme.colorScheme.primary,
                 shape = RoundedCornerShape(4.dp)
             )
-            .background(MaterialTheme.colorScheme.background)
+            .background(backgroundColor)
             .padding(8.dp)
     ) {
         Row {
@@ -75,7 +78,7 @@ fun ProductListItem(
                 modifier = Modifier.weight(1f),
                 style = MaterialTheme.typography.titleLarge
             )
-            if (product == bestPriceProduct) {
+            if (isBestProduct) {
                 Icon(
                     imageVector = Icons.Filled.ThumbUp,
                     contentDescription = stringResource(R.string.best_price_cont_desc)
@@ -101,6 +104,20 @@ fun ProductListItem(
 @Preview(showBackground = true)
 @Composable
 fun ProductListItemPreview() {
+    PriceCalculatorTheme {
+        ProductListItem(
+            product = getDummyProduct(id = 1),
+            bestPriceProduct = getDummyProduct(id = 2),
+            currency = "$",
+            modifier = Modifier.fillMaxWidth(),
+            onEditClicked = {}
+        )
+    }
+}
+
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun ProductListItemPreviewDark() {
     PriceCalculatorTheme {
         ProductListItem(
             product = getDummyProduct(id = 1),

@@ -3,6 +3,7 @@ package com.zedevstuds.price_equalizer_redesign.price_calculation.ui.items
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
@@ -17,12 +18,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.zedevstuds.price_equalizer_redesign.R
@@ -107,6 +110,7 @@ fun EditProductDialog(
                 CleanableTextField(
                     title = amount,
                     hint = stringResource(R.string.amount_hint),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                     onValueChange = { value ->
                         amount = value
                     },
@@ -116,6 +120,7 @@ fun EditProductDialog(
                 CleanableTextField(
                     title = price,
                     hint = stringResource(R.string.price_hint),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                     onValueChange = { value ->
                         price = value
                     },
@@ -237,9 +242,10 @@ fun SelectCurrencyDialog(
 }
 
 @Composable
-fun CleanableTextField(
+private fun CleanableTextField(
     title: String,
     hint: String,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     onValueChange: (String) -> Unit,
     onClear: () -> Unit
 ) {
@@ -260,6 +266,7 @@ fun CleanableTextField(
                 )
             }
         },
+        keyboardOptions = keyboardOptions,
         onValueChange = onValueChange
     )
 }

@@ -1,6 +1,7 @@
 package com.zedevstuds.price_equalizer_redesign.price_calculation.ui.mainscreen
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zedevstuds.price_equalizer_redesign.BuildConfig
@@ -137,15 +138,20 @@ class MainScreenViewModel(
 
     fun updateProduct(updatedProduct: ProductUiModel) {
         viewModelScope.launch {
-            val priceForCustomAmount = getPriceForOneUnitUseCase.execute(
-                amount = updatedProduct.enteredAmount,
-                price = updatedProduct.enteredPrice,
-                measureUnit = updatedProduct.selectedMeasureUnit
-            )
-            updateProductUseCase.execute(
-                product = updatedProduct.copy(priceForOneUnit = priceForCustomAmount).toDomain(),
-                listId = selectedProductList.value.id
-            )
+            try {
+                val priceForCustomAmount = getPriceForOneUnitUseCase.execute(
+                    amount = updatedProduct.enteredAmount,
+                    price = updatedProduct.enteredPrice,
+                    measureUnit = updatedProduct.selectedMeasureUnit
+                )
+                updateProductUseCase.execute(
+                    product = updatedProduct.copy(priceForOneUnit = priceForCustomAmount).toDomain(),
+                    listId = selectedProductList.value.id
+                )
+            } catch (e: Exception) {
+                Log.d(TAG, "calculatePriceForCustomAmount exception: ${e.message}")
+                messageId.emit(R.string.message_incorrect_format)
+            }
         }
     }
 
