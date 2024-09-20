@@ -140,7 +140,6 @@ class EnterParamsViewModel(
             )
         } catch (e: Exception) {
             Log.d(TAG, "calculatePriceForCustomAmount exception: ${e.message}")
-            sendMessageEvent(R.string.message_incorrect_format)
         }
     }
 

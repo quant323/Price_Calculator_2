@@ -150,7 +150,6 @@ class MainScreenViewModel(
                 )
             } catch (e: Exception) {
                 Log.d(TAG, "calculatePriceForCustomAmount exception: ${e.message}")
-                messageId.emit(R.string.message_incorrect_format)
             }
         }
     }
