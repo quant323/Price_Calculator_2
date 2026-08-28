@@ -97,22 +97,20 @@ fun MainScreen(
             },
         ) { contentPadding ->
             Column(
-                modifier = Modifier.padding(
-                    top = contentPadding.calculateTopPadding(),
-                    bottom = 8.dp,
-                    start = 8.dp,
-                    end = 8.dp
-                )
+                modifier = Modifier.padding(contentPadding)
             ) {
                 MainScreenContent(
                     productList = productList,
                     currency = mainViewModel.getCurrency().sign,
                     scrollToFlow = mainViewModel.scrollTo,
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.weight(1f).padding(horizontal = 8.dp),
                     onDeleteProduct = mainViewModel::onDeleteProduct,
                     onUpdateProduct = mainViewModel::updateProduct
                 )
-                EnterParamsArea(viewModel = mainViewModel.enterParamsViewModel)
+                EnterParamsArea(
+                    viewModel = mainViewModel.enterParamsViewModel,
+                    modifier = Modifier.padding(horizontal = 8.dp).padding(bottom = 8.dp)
+                )
             }
             if (showCurrencyDialog) {
                 SelectCurrencyDialog(
