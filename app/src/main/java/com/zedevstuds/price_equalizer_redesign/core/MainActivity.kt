@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
     private val viewModel by viewModel<MainActivityViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-//        enableEdgeToEdge()
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContent {
             val darkTheme = viewModel.isDarkMode.collectAsState()

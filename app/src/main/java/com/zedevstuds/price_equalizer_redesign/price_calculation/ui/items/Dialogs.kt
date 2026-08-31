@@ -2,7 +2,11 @@ package com.zedevstuds.price_equalizer_redesign.price_calculation.ui.items
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -58,6 +62,7 @@ fun ProductTitleDialog(
             CleanableTextField(
                 title = productName,
                 hint = stringResource(R.string.edit_product_title_dialog_hint),
+                modifier = Modifier.imePadding(),
                 onValueChange = {
                     productName = it
                 },
@@ -97,7 +102,11 @@ fun EditProductDialog(
             }
         },
         text = {
-            Column {
+            Column(
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .imePadding()
+            ) {
                 CleanableTextField(
                     title = productName,
                     hint = stringResource(R.string.edit_product_title_dialog_hint),
@@ -167,6 +176,7 @@ fun ListTitleDialog(
             CleanableTextField(
                 title = listName,
                 hint = stringResource(R.string.edit_list_title_dialog_hint),
+                modifier = Modifier.imePadding(),
                 onValueChange = {
                     listName = it
                     isConfirmEnabled = it.isNotEmpty() && it.isNewTitle()
@@ -245,6 +255,7 @@ fun SelectCurrencyDialog(
 private fun CleanableTextField(
     title: String,
     hint: String,
+    modifier: Modifier = Modifier,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     onValueChange: (String) -> Unit,
     onClear: () -> Unit
@@ -258,6 +269,7 @@ private fun CleanableTextField(
             color = MaterialTheme.colorScheme.onSurfaceVariant
         ),
         singleLine = true,
+        modifier = modifier,
         trailingIcon = {
             IconButton(onClick = onClear) {
                 Icon(
